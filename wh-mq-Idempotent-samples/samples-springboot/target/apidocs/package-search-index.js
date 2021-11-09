@@ -1,0 +1,1 @@
+packageSearchIndex = [{"l":"com.samples","h":"","u":""},{"l":"com.samples.config","h":"","u":""},{"l":"com.samples.controller","h":"","u":""},{"l":"所有程序包","h":"","u":"allpackages-index.html"}]

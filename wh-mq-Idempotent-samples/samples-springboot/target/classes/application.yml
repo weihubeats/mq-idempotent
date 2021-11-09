@@ -1,0 +1,6 @@
+spring:
+  application:
+    name: plutus
+  profiles:
+    active: dev
+

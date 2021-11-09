@@ -1,0 +1,1 @@
+memberSearchIndex = [{"l":"consume(MessageExt)","h":"","u":"consume(org.apache.rocketmq.common.message.MessageExt)"},{"l":"main(String[])","h":"","u":"main(java.lang.String[])"},{"l":"RocketMQSamples(IdempotentConfig, Idempotent)","h":"","u":"%3Cinit%3E(com.mq.idempotent.core.idempotent.IdempotentConfig,com.mq.idempotent.core.idempotent.Idempotent)"}]

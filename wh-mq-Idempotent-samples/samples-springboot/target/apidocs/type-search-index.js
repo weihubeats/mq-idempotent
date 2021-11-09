@@ -1,0 +1,1 @@
+typeSearchIndex = [{"l":"AliyunMQConfig","h":"","u":""},{"l":"PlutusApplication","h":"","u":""},{"l":"RedisConfig","h":"","u":""},{"l":"TestController","h":"","u":""},{"l":"所有类","h":"","u":"allclasses-index.html"}]
