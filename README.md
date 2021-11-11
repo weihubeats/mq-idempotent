@@ -61,6 +61,14 @@ springboot 使用
 ```
 
 ## ons-client 客户端使用
+```xml
+<dependency>
+  <groupId>io.github.weihubeats</groupId>
+  <artifactId>wh-aliyun-rocketmq</artifactId>
+  <version>1.0.3</version>
+</dependency>
+```
+
 参考 com.samples.config.AliyunMQConfig
 
 ## 自定义 idempotentConfig中的一些策略
