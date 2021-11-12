@@ -1,20 +1,16 @@
 package com.samples.config;
 
-import com.alibaba.fastjson.JSON;
-import com.aliyun.openservices.ons.api.PropertyKeyConst;
+import com.aliyun.openservices.ons.api.*;
 import com.aliyun.openservices.ons.api.impl.authority.SessionCredentials;
 import com.aliyun.openservices.ons.api.impl.rocketmq.OnsClientRPCHook;
-import com.aliyun.openservices.shade.com.alibaba.rocketmq.client.consumer.DefaultMQPushConsumer;
-import com.aliyun.openservices.shade.com.alibaba.rocketmq.client.consumer.rebalance.AllocateMessageQueueAveragely;
 import com.aliyun.openservices.shade.com.alibaba.rocketmq.client.producer.DefaultMQProducer;
-import com.aliyun.openservices.shade.com.alibaba.rocketmq.common.message.MessageExt;
-import com.mq.idempotent.aliyun.rocketmq.AliYunRocketMQListener;
-import com.mq.idempotent.core.idempotent.Idempotent;
-import com.mq.idempotent.core.idempotent.RedisIdempotent;
+import com.mq.idempotent.core.annotation.Idempotent;
 import lombok.extern.slf4j.Slf4j;
+import com.aliyun.openservices.ons.api.Message;
 
 
 import org.redisson.api.RedissonClient;
+import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
@@ -31,81 +27,50 @@ import java.util.Properties;
 @Slf4j
 public class AliyunMQConfig {
 
-    @Value("${alimq.accessKey}")
+    @Value("${alimq.accessKey:test}")
     private String aclAccessKey;
 
-    @Value("${alimq.accessKey}")
+    @Value("${alimq.accessKey:test}")
     private String aclAccessSecret;
 
-    @Value("${alimq.orderActionTopicNameSerAddr}")
+    @Value("${alimq.orderActionTopicNameSerAddr:test}")
     private String orderNameSerAddr;
 
-    @Autowired
-    private RedissonClient redissonClient;
 
-    @Bean
-    public DefaultMQProducer defaultMQProducer() {
+
+
+
+
+
+    @Bean(initMethod = "start", destroyMethod = "shutdown")
+    public Consumer consumer() {
         Properties properties = new Properties();
-        properties.put(PropertyKeyConst.AccessKey, aclAccessKey);
-        properties.put(PropertyKeyConst.SecretKey, aclAccessSecret);
-        SessionCredentials sessionCredentials = new SessionCredentials();
-        sessionCredentials.updateContent(properties);
-        DefaultMQProducer defaultMQProducer =
-                new DefaultMQProducer("test_group",
-                        new OnsClientRPCHook(sessionCredentials));
-        defaultMQProducer.setNamesrvAddr(orderNameSerAddr);
-        // 发送失败重试次数
-        defaultMQProducer.setRetryTimesWhenSendFailed(3);
-        try {
-            defaultMQProducer.start();
-        } catch (Exception e) {
-            log.error("异常", e);
-        }
-        return defaultMQProducer;
+        properties.put(PropertyKeyConst.AccessKey, "aliMQAccessKey");
+        properties.put(PropertyKeyConst.SecretKey, "aliMQSecretKey");
+        properties.put(PropertyKeyConst.NAMESRV_ADDR, orderNameSerAddr);
+        properties.put(PropertyKeyConst.MaxReconsumeTimes, 20);
+        properties.put(PropertyKeyConst.GROUP_ID, "orderServiceGid");
+        Consumer consumer = ONSFactory.createConsumer(properties);
+        consumer.subscribe("orderTopic", "test || test_event", (message, context) ->
+                handleClient(message)
+                        ? Action.CommitMessage
+                        : Action.ReconsumeLater);
+        return consumer;
+
     }
 
-
-
-
-    @Bean
-    public DefaultMQPushConsumer defaultMQPushConsumer() {
-
-        Properties properties = new Properties();
-        properties.put(PropertyKeyConst.AccessKey, aclAccessKey);
-        properties.put(PropertyKeyConst.SecretKey, aclAccessSecret);
-        SessionCredentials sessionCredentials = new SessionCredentials();
-        sessionCredentials.updateContent(properties);
-        DefaultMQPushConsumer defaultMQPushConsumer =
-                new DefaultMQPushConsumer("test_group",
-                        new OnsClientRPCHook(sessionCredentials),
-                        new AllocateMessageQueueAveragely());
-        defaultMQPushConsumer.setNamesrvAddr(orderNameSerAddr);
-        Idempotent idempotent = new RedisIdempotent(redissonClient);
-
-
-        AliYunRocketMQListener messageListener = new AliYunRocketMQListener(idempotent) {
-            @Override
-            protected boolean consume(MessageExt messageExt) {
-                System.out.println("获取到消息，不消费" + JSON.toJSONString(messageExt));
-                System.out.println("消费完成 " + messageExt.getKeys());
-                return true;
-            }
-
-        };
-        // 注册监听器
-        defaultMQPushConsumer.registerMessageListener(messageListener);
-        // 订阅所有消息
-        try {
-            defaultMQPushConsumer.subscribe("domain_event", "*");
-            // 启动消费者
-            log.info("消费者启动");
-            defaultMQPushConsumer.start();
-        } catch (Exception e) {
-            System.out.println("接入错误：" + e.getMessage());
-//            log.error(String.valueOf(e));
+    @Idempotent
+    public boolean handleClient(Message message) {
+        String tag = message.getTag();
+        switch (tag) {
+            case "test" :
+                return ((AliyunMQConfig) AopContext.currentProxy()).test(message);
         }
-        return defaultMQPushConsumer;
+        return true;
 
+    }
+    private boolean test(Message message) {
+        return false;
     }
 
 }

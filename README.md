@@ -2,10 +2,9 @@
 
 通用的mq消息幂等去重框架，开箱即用
 
-1. 支持使用Redis or Mysql(待开发) 作幂等表
-2. 支持使用业务主键去重或消息ID去重(默认)
-3. 支持消息并发控制
-4. 目前支持mq:RocketMQ(支持阿里云客户端ons-client,也支持rocketmq-client)
+1. 需要项目是Springboot项目
+2. 原理很简单基于Spring AOP + Redis做的
+3. 现在暂时只支持Aliyun Client
 
 
 ## 使用
@@ -16,12 +15,12 @@
 <dependency>
   <groupId>io.github.weihubeats</groupId>
   <artifactId>wh-rocketmq</artifactId>
-  <version>1.0.3</version>
+  <version>1.0.4</version>
 </dependency>
 ```
 - gradle
 ```xml
-implementation 'io.github.weihubeats:wh-rocketmq:1.0.3'
+implementation 'io.github.weihubeats:wh-rocketmq:1.0.4'
 ```
 
 使用例子请参考 wh-mq-Idempotent-samples 模块
@@ -29,110 +28,44 @@ implementation 'io.github.weihubeats:wh-rocketmq:1.0.3'
 springboot 使用
 
 - 最简单使用
-```java
-    @Bean
-    public DefaultMQPushConsumer defaultMQProducer1() throws MQClientException {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("TEST-APP1");
-        consumer.subscribe("TopicTest", "*");
-        consumer.setNamesrvAddr("127.0.0.1:9876");
-        Idempotent idempotent = new RedisIdempotent(redissonClient);
-        RocketMQListener messageListener = new RocketMQListener(idempotent) {
-            @Override
-            protected boolean consume(MessageExt messageExt) {
-                switch (messageExt.getTopic()) {
-                    case "TEST-TOPIC":
-                        log.info("假装消费很久....{} {}", new String(messageExt.getBody()), messageExt);
-                        try {
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                        }
-                        break;
-                }
-                System.out.println("消费完成 " + messageExt.getKeys());
-                return true;
-            }
-        };
-        consumer.registerMessageListener(messageListener);
-        log.info("消费者启动");
-        consumer.start();
-        return consumer;
 
-    }
+- 基于AOP实现，在需要幂等的方法添加注解
+```java
+@Idempotent
 ```
-
-## ons-client 客户端使用
-参考 com.samples.config.AliyunMQConfig
-
-## 自定义 idempotentConfig中的一些策略
-1. 并发消费等待时间
-2. 自定义监控
+一个简单例子 参考模块 samples-springboot config AliyunMQConfig.java
 ```java
-IdempotentConfig idempotentConfig = new IdempotentConfig();
-        idempotentConfig.setApplication("test");
-        // 自定义监控报警
-        idempotentConfig.setMonitor(new Monitor() {
-            @Override
-            public void monitor(UnMessage unMessage) {
-                Monitor.super.monitor(unMessage);
-            }
-        });
-```
-> 默认redis 写入成功仅打印异常log
-3. 自定义业务去重key(RocketMQ 默认使用消息唯一key,如果要使用业务设置的keys)
-```java
-        idempotentConfig.setStrategyEnum(StrategyEnum.KEYS);
-```
-4. 
-
-```java
-@Configuration
-@Slf4j
-public class MQConfig {
-
-    @Autowired
-    private RedissonClient redissonClient;
-
-
-    @Bean
-    public DefaultMQPushConsumer defaultMQProducer() throws MQClientException {
-        DefaultMQPushConsumer consumer = new DefaultMQPushConsumer("TEST-APP1");
-        consumer.subscribe("TopicTest", "*");
-        consumer.setNamesrvAddr("127.0.0.1:9876");
-        IdempotentConfig idempotentConfig = new IdempotentConfig();
-        idempotentConfig.setApplication("plutus");
-
-        Idempotent idempotent = new RedisIdempotent(redissonClient);
-        RocketMQListener messageListener = new RocketMQListener(idempotentConfig, idempotent) {
-            @Override
-            protected boolean consume(MessageExt messageExt) {
-                switch (messageExt.getTopic()) {
-                    case "TEST-TOPIC":
-                        log.info("假装消费很久....{} {}", new String(messageExt.getBody()), messageExt);
-                        try {
-                            Thread.sleep(3000);
-                        } catch (InterruptedException e) {
-                        }
-                        break;
-                }
-                System.out.println("消费完成 " + messageExt.getKeys());
-                return true;
-            }
-        };
-        consumer.registerMessageListener(messageListener);
-        log.info("消费者启动");
-        consumer.start();
+@Bean(initMethod = "start", destroyMethod = "shutdown")
+    public Consumer consumer() {
+        Properties properties = new Properties();
+        properties.put(PropertyKeyConst.AccessKey, "aliMQAccessKey");
+        properties.put(PropertyKeyConst.SecretKey, "aliMQSecretKey");
+        properties.put(PropertyKeyConst.NAMESRV_ADDR, orderNameSerAddr);
+        properties.put(PropertyKeyConst.MaxReconsumeTimes, 20);
+        properties.put(PropertyKeyConst.GROUP_ID, "orderServiceGid");
+        Consumer consumer = ONSFactory.createConsumer(properties);
+        consumer.subscribe("orderTopic", "test || test_event", (message, context) ->
+                handleClient(message)
+                        ? Action.CommitMessage
+                        : Action.ReconsumeLater);
         return consumer;
 
     }
 
-}
+    @Idempotent
+    public boolean handleClient(Message message) {
+        String tag = message.getTag();
+        switch (tag) {
+            case "test" :
+                return ((AliyunMQConfig) AopContext.currentProxy()).test(message);
+        }
+        return true;
 
+    }
+    private boolean test(Message message) {
+        return false;
+    }
 ```
-
-
-
-
-
 
 ## 模块说明
 - wh-core 核心

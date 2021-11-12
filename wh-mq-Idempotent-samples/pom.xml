@@ -5,7 +5,7 @@
     <parent>
         <artifactId>wh-mq-Idempotent</artifactId>
         <groupId>io.github.weihubeats</groupId>
-        <version>1.0.3</version>
+        <version>1.0.4</version>
 
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -13,7 +13,6 @@
     <artifactId>wh-mq-Idempotent-samples</artifactId>
     <packaging>pom</packaging>
     <modules>
-        <module>general</module>
         <module>samples-springboot</module>
     </modules>
     <properties>

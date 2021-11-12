@@ -3,6 +3,7 @@ package com.samples.controller;
 import com.alibaba.fastjson.JSON;
 import com.aliyun.openservices.shade.com.alibaba.rocketmq.client.producer.DefaultMQProducer;
 import com.aliyun.openservices.shade.com.alibaba.rocketmq.common.message.Message;
+import com.mq.idempotent.core.annotation.Idempotent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -20,21 +21,16 @@ import java.nio.charset.StandardCharsets;
 public class TestController {
 
     @Autowired
-    DefaultMQProducer defaultMQProducer;
+    Test test;
+
+
 
     @GetMapping("/send")
     public void test() throws Exception{
-        System.out.println("进来了");
-        /*Message message = new Message();
-        message.setBody("test message".getBytes(StandardCharsets.UTF_8));
-        message.setTopic("domain_event");
-        message.setKey("test key");*/
-        Message message = new Message();
-        message.setBody("test message".getBytes(StandardCharsets.UTF_8));
-        message.setTopic("domain_event");
-        message.setKeys("test key");
-        defaultMQProducer.send(message);
-        System.out.println("发送消息成功 " + JSON.toJSONString(message));
+        System.out.println("hahah");
+        test.test();
+
+
     }
 
 }
