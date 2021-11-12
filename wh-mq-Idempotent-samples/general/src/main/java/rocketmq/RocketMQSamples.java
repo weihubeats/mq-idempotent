@@ -1,3 +1,4 @@
+/*
 package rocketmq;
 
 import com.mq.idempotent.core.idempotent.Idempotent;
@@ -13,11 +14,13 @@ import org.redisson.api.RedissonClient;
 import org.redisson.config.Config;
 import org.redisson.config.SingleServerConfig;
 
+*/
 /**
  * @author : wh
  * @date : 2021/11/5 11:40
  * @description: mq 测试
- */
+ *//*
+
 @Slf4j
 public class RocketMQSamples extends RocketMQListener {
 
@@ -71,3 +74,4 @@ public class RocketMQSamples extends RocketMQListener {
     }
 
 }
+*/
