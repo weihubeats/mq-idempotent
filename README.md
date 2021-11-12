@@ -2,10 +2,8 @@
 
 通用的mq消息幂等去重框架，开箱即用
 
-1. 支持使用Redis or Mysql(待开发) 作幂等表
-2. 支持使用业务主键去重或消息ID去重(默认)
-3. 支持消息并发控制
-4. 目前支持mq:RocketMQ(支持阿里云客户端ons-client,也支持rocketmq-client)
+1. 需要项目是Springboot项目
+2. 原理很简单基于Spring AOP + Redis做的
 
 
 ## 使用

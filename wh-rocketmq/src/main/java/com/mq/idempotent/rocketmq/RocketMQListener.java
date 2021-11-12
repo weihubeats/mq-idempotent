@@ -1,3 +1,4 @@
+/*
 package com.mq.idempotent.rocketmq;
 
 import com.mq.idempotent.core.constants.StrategyEnum;
@@ -15,11 +16,13 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+*/
 /**
  * @author : wh
  * @date : 2021/11/4 15:17
  * @description:
- */
+ *//*
+
 @Slf4j
 public abstract class RocketMQListener implements MessageListenerConcurrently {
 
@@ -77,31 +80,37 @@ public abstract class RocketMQListener implements MessageListenerConcurrently {
     }
 
 
-    /**
+    */
+/**
      * 业务处理
      *
      * @param messageExt
      * @return
-     */
+     *//*
+
     protected abstract boolean consume(final MessageExt messageExt);
 
-    /**
+    */
+/**
      * 默认使用 uniqKey作去重标识
      *
      * @param messageExt
      * @return
-     */
+     *//*
+
     protected String uniqID(final MessageExt messageExt) {
         String uniqID = MessageClientIDSetter.getUniqID(messageExt);
         return uniqID == null ? messageExt.getMsgId() : uniqID;
     }
 
-    /**
+    */
+/**
      * 幂等消费
      *
      * @param messageExt
      * @return
-     */
+     *//*
+
     private boolean consumeByIdempotent(final MessageExt messageExt) {
 
         UnMessage unMessage = new UnMessage();
@@ -148,3 +157,4 @@ public abstract class RocketMQListener implements MessageListenerConcurrently {
 
 
 }
+*/

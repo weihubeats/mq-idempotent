@@ -16,11 +16,11 @@ import org.springframework.context.annotation.Configuration;
 @Configuration
 public class RedisConfig {
 
-    @Value("${redis.host:127.0.0.1}")
+    @Value("${redis.host:172.25.97.142}")
     private String redisLoginHost;
     @Value("${redis.port:6379}")
     private Integer redisLoginPort;
-    @Value("${redis.password:123456}")
+    @Value("${redis.password:cider}")
     private String redisLoginPassword;
 
 
