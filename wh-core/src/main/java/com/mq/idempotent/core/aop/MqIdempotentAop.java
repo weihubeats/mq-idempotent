@@ -53,12 +53,11 @@ public class MqIdempotentAop {
         //方法参数
         Object[] args = pjp.getArgs();
         Idempotent annotation = method.getAnnotation(Idempotent.class);
-        String name = annotation.name();
 
         Message message = (Message)Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("参数异常"));
         // todo 后续优化为对其他mq client 兼容
-        String msgID = Objects.equals(annotation.name(), "keys") ? message.getKey() : message.getMsgID();
-        message.getKey();
+        String messageKey = message.getKey();
+        String msgID = Objects.nonNull(messageKey) ? messageKey : message.getMsgID();
         String key = "mq::unique::" + msgID;
         log.info("唯一key {}", key);
         if (exitKey(key)) {

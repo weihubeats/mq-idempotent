@@ -12,9 +12,4 @@ import java.lang.annotation.*;
 @Documented
 public @interface Idempotent {
 
-    /**
-     * 唯一id
-     * @return
-     */
-    String name() default "null";
 }

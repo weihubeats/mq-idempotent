@@ -7,7 +7,7 @@
     <groupId>io.github.weihubeats</groupId>
     <artifactId>wh-mq-Idempotent</artifactId>
     <packaging>pom</packaging>
-    <version>1.0.3</version>
+    <version>1.0.4</version>
 
     <name>mq-Idempotent</name>
     <description>mq-Idempotent</description>
@@ -16,9 +16,7 @@
 
     <modules>
         <module>wh-core</module>
-        <module>wh-rocketmq</module>
         <module>wh-mq-Idempotent-samples</module>
-        <module>wh-aliyun-rocketmq</module>
     </modules>
 
 

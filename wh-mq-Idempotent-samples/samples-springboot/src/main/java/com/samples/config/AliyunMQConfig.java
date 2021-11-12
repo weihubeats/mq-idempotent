@@ -48,18 +48,13 @@ public class AliyunMQConfig {
         properties.put(PropertyKeyConst.AccessKey, "aliMQAccessKey");
         properties.put(PropertyKeyConst.SecretKey, "aliMQSecretKey");
         properties.put(PropertyKeyConst.NAMESRV_ADDR, orderNameSerAddr);
-
         properties.put(PropertyKeyConst.MaxReconsumeTimes, 20);
         properties.put(PropertyKeyConst.GROUP_ID, "orderServiceGid");
-
         Consumer consumer = ONSFactory.createConsumer(properties);
-
         consumer.subscribe("orderTopic", "test || test_event", (message, context) ->
                 handleClient(message)
                         ? Action.CommitMessage
                         : Action.ReconsumeLater);
-
-
         return consumer;
 
     }
