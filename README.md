@@ -5,6 +5,7 @@
 1. 需要项目是Springboot项目
 2. 原理很简单基于Spring AOP + Redis做的
 3. 现在暂时只支持Aliyun Client
+4. 由于目前源代码非常轻量，所以不引用jar直接copy源代码到项目中使用也是可以的
 
 
 ## 使用
