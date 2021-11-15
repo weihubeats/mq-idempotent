@@ -1,7 +1,6 @@
 package com.samples.config;
 
 import com.aliyun.openservices.ons.api.Message;
-import com.aliyun.openservices.shade.com.alibaba.rocketmq.common.message.MessageExt;
 import com.mq.idempotent.core.annotation.Idempotent;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -26,7 +25,9 @@ public class MessageEventHandler {
         if (Objects.equals(message.getTag(), "TagA")) {
             // 防止AOP失效失效
             messageEventHandler.testConsumer(message);
+            return true;
         }
+        return true;
 
     }
 
