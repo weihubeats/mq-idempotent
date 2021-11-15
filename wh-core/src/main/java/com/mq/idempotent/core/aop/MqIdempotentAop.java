@@ -1,7 +1,7 @@
 package com.mq.idempotent.core.aop;
 
-import com.aliyun.openservices.ons.api.Message;
 import com.mq.idempotent.core.annotation.Idempotent;
+import com.mq.idempotent.core.model.IdempotentConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -31,12 +31,18 @@ public class MqIdempotentAop {
 
     private final RedissonClient redissonClient;
 
+    private final IdempotentConfig idempotentConfig;
 
-    public MqIdempotentAop(RedissonClient redissonClient) {
+    private final MessageConverter messageConverter;
+
+
+    public MqIdempotentAop(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter messageConverter) {
         if (Objects.isNull(redissonClient)) {
             throw new NullPointerException("redissonClient template is null");
         }
         this.redissonClient = redissonClient;
+        this.idempotentConfig = idempotentConfig;
+        this.messageConverter = messageConverter;
     }
 
 
@@ -54,11 +60,11 @@ public class MqIdempotentAop {
         Object[] args = pjp.getArgs();
         Idempotent annotation = method.getAnnotation(Idempotent.class);
 
-        Message message = (Message)Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("参数异常"));
+//        Message message = (Message)Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("参数异常"));
         // todo 后续优化为对其他mq client 兼容
-        String messageKey = message.getKey();
-        String msgID = Objects.nonNull(messageKey) ? messageKey : message.getMsgID();
-        String key = "mq::unique::" + msgID;
+        String msgID = messageConverter.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("参数异常")));
+//        String msgID = Objects.nonNull(messageKey) ? messageKey : message.getMsgID();
+        String key = idempotentConfig.getRedisKey() + msgID;
         log.info("唯一key {}", key);
         if (exitKey(key)) {
             log.info("重复消费");
@@ -71,7 +77,7 @@ public class MqIdempotentAop {
         try {
             Object proceed = pjp.proceed();
             RBucket<String> bucket = redissonClient.getBucket(key);
-            bucket.set("s");
+            bucket.set(idempotentConfig.getRedisValue());
             return proceed;
         } finally {
             RLock stockLock = redissonClient.getLock(key);
@@ -83,7 +89,7 @@ public class MqIdempotentAop {
     public boolean lock(String lockName) {
         RLock stockLock = redissonClient.getLock(lockName);
         try {
-            return stockLock.tryLock(3, TimeUnit.SECONDS);
+            return stockLock.tryLock(idempotentConfig.getTryLockTime(), TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
