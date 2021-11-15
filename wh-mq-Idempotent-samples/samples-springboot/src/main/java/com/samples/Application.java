@@ -2,9 +2,6 @@ package com.samples;
 
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
-import org.springframework.context.annotation.EnableAspectJAutoProxy;
-
-import java.util.TimeZone;
 
 /**
  * @author XiaoLei
@@ -12,10 +9,10 @@ import java.util.TimeZone;
  * @description
  */
 @SpringBootApplication
-public class PlutusApplication {
+public class Application {
 
     public static void main(String[] args) {
-        SpringApplication.run(PlutusApplication.class, args);
+        SpringApplication.run(Application.class, args);
     }
 
 }
