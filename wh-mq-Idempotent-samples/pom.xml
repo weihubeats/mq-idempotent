@@ -14,26 +14,11 @@
     <packaging>pom</packaging>
     <modules>
         <module>samples-springboot</module>
+        <module>springboot-rocketmq</module>
     </modules>
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
     </properties>
 
-
-
-    <dependencies>
-        <dependency>
-            <groupId>io.github.weihubeats</groupId>
-            <artifactId>wh-mq-aliyun-rocketmq</artifactId>
-            <version>${project.version}</version>
-        </dependency>
-        <dependency>
-            <groupId>org.apache.rocketmq</groupId>
-            <artifactId>rocketmq-client</artifactId>
-            <version>4.5.1</version>
-            <optional>true</optional>
-        </dependency>
-
-    </dependencies>
 
 </project>
