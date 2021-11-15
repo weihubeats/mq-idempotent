@@ -1,6 +1,5 @@
 package com.mq.idempotent.core.aop;
 
-import com.aliyun.openservices.ons.api.Message;
 import com.mq.idempotent.core.annotation.Idempotent;
 import com.mq.idempotent.core.model.IdempotentConfig;
 import lombok.extern.slf4j.Slf4j;
@@ -34,13 +33,16 @@ public class MqIdempotentAop {
 
     private final IdempotentConfig idempotentConfig;
 
+    private final MessageConverter messageConverter;
 
-    public MqIdempotentAop(RedissonClient redissonClient, IdempotentConfig idempotentConfig ) {
+
+    public MqIdempotentAop(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter messageConverter) {
         if (Objects.isNull(redissonClient)) {
             throw new NullPointerException("redissonClient template is null");
         }
         this.redissonClient = redissonClient;
         this.idempotentConfig = idempotentConfig;
+        this.messageConverter = messageConverter;
     }
 
 
@@ -58,10 +60,10 @@ public class MqIdempotentAop {
         Object[] args = pjp.getArgs();
         Idempotent annotation = method.getAnnotation(Idempotent.class);
 
-        Message message = (Message)Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("参数异常"));
+//        Message message = (Message)Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("参数异常"));
         // todo 后续优化为对其他mq client 兼容
-        String messageKey = message.getKey();
-        String msgID = Objects.nonNull(messageKey) ? messageKey : message.getMsgID();
+        String msgID = messageConverter.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("参数异常")));
+//        String msgID = Objects.nonNull(messageKey) ? messageKey : message.getMsgID();
         String key = idempotentConfig.getRedisKey() + msgID;
         log.info("唯一key {}", key);
         if (exitKey(key)) {

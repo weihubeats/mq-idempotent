@@ -17,6 +17,7 @@
     <modules>
         <module>wh-core</module>
         <module>wh-mq-Idempotent-samples</module>
+        <module>wh-mq-aliyun-rocketmq</module>
     </modules>
 
 
