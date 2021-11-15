@@ -49,6 +49,23 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 
 springboot 使用
 
+
+## 自定义配置
+```java
+    @Bean
+    public IdempotentConfig idempotentConfig() {
+        IdempotentConfig idempotentConfig = new IdempotentConfig();
+        // 去重 redis key名 默认 mq::unique::
+        idempotentConfig.setRedisKey(redisKey);
+        // 去重redis value 默认 s
+        idempotentConfig.setRedisValue(redisValue);
+        // 去重redis尝试获取锁等待时间 默认1s 单位秒
+        idempotentConfig.setTryLockTime(tryLockTime);
+        return idempotentConfig;
+
+    }
+```
+
 ## 模块说明
 - wh-core 核心实现
 - wh-mq-rocketmq rocketmq幂等核心实现
