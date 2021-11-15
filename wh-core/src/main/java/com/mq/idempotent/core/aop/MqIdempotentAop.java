@@ -2,6 +2,7 @@ package com.mq.idempotent.core.aop;
 
 import com.aliyun.openservices.ons.api.Message;
 import com.mq.idempotent.core.annotation.Idempotent;
+import com.mq.idempotent.core.model.IdempotentConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.aspectj.lang.ProceedingJoinPoint;
 import org.aspectj.lang.annotation.Around;
@@ -31,12 +32,15 @@ public class MqIdempotentAop {
 
     private final RedissonClient redissonClient;
 
+    private final IdempotentConfig idempotentConfig;
 
-    public MqIdempotentAop(RedissonClient redissonClient) {
+
+    public MqIdempotentAop(RedissonClient redissonClient, IdempotentConfig idempotentConfig ) {
         if (Objects.isNull(redissonClient)) {
             throw new NullPointerException("redissonClient template is null");
         }
         this.redissonClient = redissonClient;
+        this.idempotentConfig = idempotentConfig;
     }
 
 
@@ -58,7 +62,7 @@ public class MqIdempotentAop {
         // todo 后续优化为对其他mq client 兼容
         String messageKey = message.getKey();
         String msgID = Objects.nonNull(messageKey) ? messageKey : message.getMsgID();
-        String key = "mq::unique::" + msgID;
+        String key = idempotentConfig.getRedisKey() + msgID;
         log.info("唯一key {}", key);
         if (exitKey(key)) {
             log.info("重复消费");
@@ -71,7 +75,7 @@ public class MqIdempotentAop {
         try {
             Object proceed = pjp.proceed();
             RBucket<String> bucket = redissonClient.getBucket(key);
-            bucket.set("s");
+            bucket.set(idempotentConfig.getRedisValue());
             return proceed;
         } finally {
             RLock stockLock = redissonClient.getLock(key);
@@ -83,7 +87,7 @@ public class MqIdempotentAop {
     public boolean lock(String lockName) {
         RLock stockLock = redissonClient.getLock(lockName);
         try {
-            return stockLock.tryLock(3, TimeUnit.SECONDS);
+            return stockLock.tryLock(idempotentConfig.getTryLockTime(), TimeUnit.SECONDS);
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
