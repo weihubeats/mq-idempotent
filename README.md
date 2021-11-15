@@ -10,68 +10,66 @@
 
 ## 使用
 
-### rocketmq-client
+####
+必要条件
+1. redis
+2. springboot
+3. jdk8+
+
+#### 1. 添加依赖
+##### rocketmq-client
 - maven
 ```xml
 <dependency>
   <groupId>io.github.weihubeats</groupId>
-  <artifactId>wh-rocketmq</artifactId>
-  <version>1.0.4</version>
+  <artifactId>wh-mq-rocketmq</artifactId>
+  <version>1.0.5</version>
 </dependency>
 ```
 - gradle
 ```xml
-implementation 'io.github.weihubeats:wh-rocketmq:1.0.4'
+implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.5'
 ```
 
+##### aliyun ons-client
+```xml
+<dependency>
+<groupId>io.github.weihubeats</groupId>
+<artifactId>wh-mq-aliyun-rocketmq</artifactId>
+<version>1.0.5</version>
+</dependency>
+```
+
+- gradle
+```xml
+implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
+```
+## 例子参考
 使用例子请参考 wh-mq-Idempotent-samples 模块
 
 springboot 使用
 
-- 最简单使用
 
-- 基于AOP实现，在需要幂等的方法添加注解
+## 自定义配置
 ```java
-@Idempotent
-```
-一个简单例子 参考模块 samples-springboot config AliyunMQConfig.java
-```java
-@Bean(initMethod = "start", destroyMethod = "shutdown")
-    public Consumer consumer() {
-        Properties properties = new Properties();
-        properties.put(PropertyKeyConst.AccessKey, "aliMQAccessKey");
-        properties.put(PropertyKeyConst.SecretKey, "aliMQSecretKey");
-        properties.put(PropertyKeyConst.NAMESRV_ADDR, orderNameSerAddr);
-        properties.put(PropertyKeyConst.MaxReconsumeTimes, 20);
-        properties.put(PropertyKeyConst.GROUP_ID, "orderServiceGid");
-        Consumer consumer = ONSFactory.createConsumer(properties);
-        consumer.subscribe("orderTopic", "test || test_event", (message, context) ->
-                handleClient(message)
-                        ? Action.CommitMessage
-                        : Action.ReconsumeLater);
-        return consumer;
+    @Bean
+    public IdempotentConfig idempotentConfig() {
+        IdempotentConfig idempotentConfig = new IdempotentConfig();
+        // 去重 redis key名 默认 mq::unique::
+        idempotentConfig.setRedisKey(redisKey);
+        // 去重redis value 默认 s
+        idempotentConfig.setRedisValue(redisValue);
+        // 去重redis尝试获取锁等待时间 默认1s 单位秒
+        idempotentConfig.setTryLockTime(tryLockTime);
+        return idempotentConfig;
 
-    }
-
-    @Idempotent
-    public boolean handleClient(Message message) {
-        String tag = message.getTag();
-        switch (tag) {
-            case "test" :
-                return ((AliyunMQConfig) AopContext.currentProxy()).test(message);
-        }
-        return true;
-
-    }
-    private boolean test(Message message) {
-        return false;
     }
 ```
 
 ## 模块说明
-- wh-core 核心
-- wh-rocketmq rocketmq幂等核心实现
-- wh-aliyun-rocketmq 阿里云client幂等核心实现
+- wh-core 核心实现
+- wh-mq-rocketmq rocketmq幂等核心实现
+- wh-mq-aliyun-rocketmq 阿里云client幂等核心实现
 - wh-mq-Idempotent-samples 使用例子
 
 ## 设计思路
@@ -85,12 +83,16 @@ springboot 使用
 4. 执行业务代码成功后写入消费成功(写入redis或更新Mysql),但是需要注意的是这里有一个待优化点就是业务代码执行和写入消费成功消息不是一个原子操作,所以这里再写入消费成功信息失败后添加了报警(后续考虑优化为原子操作)
 5. 释放锁
 
+## 发布版本
+
+- 1.0.4 : 支持阿里云RocketMQ Client
+- 1.0.5 : 新增支持开源RocketMQ Client，新增自动化配置 `IdempotentConfig.java`
+
 ## 未来版本
 
 1. 支持RabbitMQ
 2. 支持kafka
 3. 支持 rocketmq-spring-boot-starter 整合开箱即用
-4. 上传到中央Maven
 
 ## 正在开发中。。。。。。
 
