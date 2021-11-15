@@ -8,11 +8,15 @@ import org.apache.rocketmq.common.consumer.ConsumeFromWhere;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.apache.rocketmq.common.protocol.heartbeat.MessageModel;
 import org.springframework.aop.framework.AopContext;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
+
+import java.util.List;
+import java.util.Objects;
 
 
 /**
@@ -23,21 +27,27 @@ import org.springframework.util.CollectionUtils;
 @Configuration
 public class MQConfig {
 
-    @Value("${rocketmq.consumer.namesrvAddr:127.0.0.1}")
+    @Value("${rocketmq.consumer.namesrvAddr:127.0.0.1:9876}")
     private String namesrvAddr;
-    @Value("${rocketmq.consumer.groupName}")
+
+    @Value("${rocketmq.consumer.groupName:please_rename_unique_group_name_4}")
     private String groupName;
-    @Value("${rocketmq.consumer.consumeThreadMin}")
+
+    @Value("${rocketmq.consumer.consumeThreadMin:10}")
     private int consumeThreadMin;
-    @Value("${rocketmq.consumer.consumeThreadMax}")
+
+    @Value("${rocketmq.consumer.consumeThreadMax:10}")
     private int consumeThreadMax;
-    // 订阅指定的 topic
-    @Value("${rocketmq.consumer.topics}")
+
+    @Value("${rocketmq.consumer.topics:TopicTest}")
     private String topics;
-    @Value("${rocketmq.consumer.consumeMessageBatchMaxSize}")
+
+    @Value("${rocketmq.consumer.consumeMessageBatchMaxSize:1}")
     private int consumeMessageBatchMaxSize;
 
-    private static String TOPIC = "testTopic";
+    @Autowired
+    MessageEventHandler handler;
+
 
 
 
@@ -57,18 +67,13 @@ public class MQConfig {
         consumer.setMessageModel(MessageModel.CLUSTERING);
         // 设置一次消费消息的条数，默认为 1 条
         consumer.setConsumeMessageBatchMaxSize(consumeMessageBatchMaxSize);
-        consumer.registerMessageListener((MessageListenerConcurrently) (msgs, consumeConcurrentlyContext) -> {
+        consumer.registerMessageListener((MessageListenerConcurrently) (msgs, context) -> {
             if (CollectionUtils.isEmpty(msgs)) {
                 return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
             }
             MessageExt messageExt = msgs.get(0);
-            String msg = new String(messageExt.getBody());
-            if (messageExt.getTopic().equals(TOPIC)) {
-                // 防止AOP失效失效
-                ((MQConfig) AopContext.currentProxy()).consume(msg);
-            }
+            handler.consumer(messageExt);
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
-
         });
 
         try {
@@ -81,9 +86,7 @@ public class MQConfig {
         return consumer;
     }
 
-    private void consume(String msg) {
 
-    }
 
 
 }

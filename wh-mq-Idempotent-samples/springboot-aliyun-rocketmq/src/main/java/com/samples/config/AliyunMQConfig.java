@@ -36,6 +36,9 @@ public class AliyunMQConfig {
     @Value("${alimq.orderActionTopicNameSerAddr:test}")
     private String orderNameSerAddr;
 
+    @Autowired
+    MessageEventHandler handler;
+
 
 
 
@@ -52,25 +55,12 @@ public class AliyunMQConfig {
         properties.put(PropertyKeyConst.GROUP_ID, "orderServiceGid");
         Consumer consumer = ONSFactory.createConsumer(properties);
         consumer.subscribe("orderTopic", "test || test_event", (message, context) ->
-                handleClient(message)
+                handler.consumer(message)
                         ? Action.CommitMessage
                         : Action.ReconsumeLater);
         return consumer;
 
     }
 
-    @Idempotent
-    public boolean handleClient(Message message) {
-        String tag = message.getTag();
-        switch (tag) {
-            case "test" :
-                return ((AliyunMQConfig) AopContext.currentProxy()).test(message);
-        }
-        return true;
-
-    }
-    private boolean test(Message message) {
-        return false;
-    }
 
 }
