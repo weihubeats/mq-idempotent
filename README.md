@@ -44,10 +44,26 @@ implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.5'
 ```xml
 implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 ```
+#### 2. 在需要幂等的方法上添加注解
+```java
+@Idempotent
+```
+
+```java
+    @Idempotent
+    public void testConsumer(Message message) {
+        String msg = new String(message.getBody());
+        System.out.println("消息id " + message.getMsgID());
+        System.out.println("消息key " + message.getKey());
+        System.out.println("消费成功, msg " + msg);
+    }
+```
+
+> 注意事项,由于是基于AOP实现的,所以需要注意AOP失效场景导致的问题
+> 添加住的方法的参数必须是 Message 请参考使用例子
+
 ## 例子参考
 使用例子请参考 wh-mq-Idempotent-samples 模块
-
-springboot 使用
 
 
 ## 自定义配置
@@ -92,8 +108,7 @@ springboot 使用
 
 1. 支持RabbitMQ
 2. 支持kafka
-3. 支持 rocketmq-spring-boot-starter 整合开箱即用
-
+3. 支持Mysql去重
 ## 正在开发中。。。。。。
 
 ## 期待你的加入
