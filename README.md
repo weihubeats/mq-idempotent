@@ -23,12 +23,12 @@
 <dependency>
   <groupId>io.github.weihubeats</groupId>
   <artifactId>wh-mq-rocketmq</artifactId>
-  <version>1.0.5</version>
+  <version>1.0.6</version>
 </dependency>
 ```
 - gradle
 ```xml
-implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.5'
+implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.6'
 ```
 
 ##### aliyun ons-client
@@ -36,7 +36,7 @@ implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.5'
 <dependency>
 <groupId>io.github.weihubeats</groupId>
 <artifactId>wh-mq-aliyun-rocketmq</artifactId>
-<version>1.0.5</version>
+<version>1.0.6</version>
 </dependency>
 ```
 
@@ -60,7 +60,7 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 ```
 
 > 注意事项,由于是基于AOP实现的,所以需要注意AOP失效场景导致的问题
-> 添加住的方法的参数必须是 Message 请参考使用例子
+> 添加住的方法的参数必须是 Message,方法返回值必须是void or boolean 以为aop要处理重复消费直接返回 true or null 请参考使用例子
 
 ## 例子参考
 使用例子请参考 wh-mq-Idempotent-samples 模块
@@ -103,6 +103,7 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 
 - 1.0.4 : 支持阿里云RocketMQ Client
 - 1.0.5 : 新增支持开源RocketMQ Client，新增自动化配置 `IdempotentConfig.java`
+- 1.0.6 : 优化重复消费重复投递问题，优化代码结构
 
 ## 未来版本
 

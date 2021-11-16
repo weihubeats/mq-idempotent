@@ -7,8 +7,6 @@ package com.mq.idempotent.core.aop;
  */
 public interface MessageConverter<T> {
 
-
-
     String getUniqueKey(T t);
 
 }

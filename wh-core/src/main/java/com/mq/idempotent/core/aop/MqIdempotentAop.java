@@ -56,19 +56,23 @@ public class MqIdempotentAop {
         //切点所在的类
         MethodSignature methodSignature = (MethodSignature) pjp.getSignature();
         Method method = methodSignature.getMethod();
+        String returnTypeName = method.getReturnType().getName();
+        // 方法返回值仅支持 boolean void 返回值
+        boolean isVoid = returnTypeName.equalsIgnoreCase("void");
+        if (!isVoid && !returnTypeName.equalsIgnoreCase("boolean")) {
+            throw new Exception("method returnType is not boolean or void");
+        }
         //方法参数
         Object[] args = pjp.getArgs();
         Idempotent annotation = method.getAnnotation(Idempotent.class);
-
-//        Message message = (Message)Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("参数异常"));
-        // todo 后续优化为对其他mq client 兼容
         String msgID = messageConverter.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("参数异常")));
-//        String msgID = Objects.nonNull(messageKey) ? messageKey : message.getMsgID();
         String key = idempotentConfig.getRedisKey() + msgID;
-        log.info("唯一key {}", key);
+        if (log.isDebugEnabled()) {
+            log.info("唯一key {}", key);
+        }
         if (exitKey(key)) {
             log.info("重复消费");
-            throw new Exception("重复消费");
+            return isVoid ? null : true;
         }
         if (!lock(key)) {
             log.info("有消息正在消费");
