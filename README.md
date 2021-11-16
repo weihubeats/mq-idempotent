@@ -60,7 +60,8 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 ```
 
 > 注意事项,由于是基于AOP实现的,所以需要注意AOP失效场景导致的问题
-> 添加住的方法的参数必须是 Message,方法返回值必须是void or boolean 以为aop要处理重复消费直接返回 true or null 请参考使用例子
+> 添加住的方法的参数必须是 Message,方法返回值必须是void 或者 boolean 因为aop要处理重复消费直接返回 true 或者 null
+> 更详细实用方式请参考模块 wh-mq-Idempotent-samples
 
 ## 例子参考
 使用例子请参考 wh-mq-Idempotent-samples 模块
