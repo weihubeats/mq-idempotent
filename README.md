@@ -12,7 +12,7 @@
 
 ####
 必要条件
-1. redis
+1. redis redis使用的是redission
 2. springboot
 3. jdk8+
 
