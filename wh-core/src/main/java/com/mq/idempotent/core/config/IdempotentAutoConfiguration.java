@@ -23,6 +23,9 @@ public class IdempotentAutoConfiguration {
     @Value("${idempotent.redis.value:1}")
     private Long tryLockTime;
 
+    @Value("${idempotent.redis.value:3}")
+    private Long redisTimeOut;
+
 
 
 
@@ -33,6 +36,7 @@ public class IdempotentAutoConfiguration {
         idempotentConfig.setRedisKey(redisKey);
         idempotentConfig.setRedisValue(redisValue);
         idempotentConfig.setTryLockTime(tryLockTime);
+        idempotentConfig.setRedisTimeOut(redisTimeOut);
         return idempotentConfig;
 
     }

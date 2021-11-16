@@ -18,6 +18,10 @@ public class IdempotentConfig {
      * redis值
      */
     private String redisValue;
+    /**
+     * 消费key存放redis时间默认3天
+     */
+    private Long redisTimeOut;
 
     /**
      * 并发获取锁等待时间

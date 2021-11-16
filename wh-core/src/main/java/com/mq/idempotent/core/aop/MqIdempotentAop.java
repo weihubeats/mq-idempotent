@@ -71,7 +71,7 @@ public class MqIdempotentAop {
             log.info("唯一key {}", key);
         }
         if (exitKey(key)) {
-            log.info("重复消费");
+            log.warn("重复消费");
             return isVoid ? null : true;
         }
         if (!lock(key)) {
@@ -81,7 +81,7 @@ public class MqIdempotentAop {
         try {
             Object proceed = pjp.proceed();
             RBucket<String> bucket = redissonClient.getBucket(key);
-            bucket.set(idempotentConfig.getRedisValue());
+            bucket.set(idempotentConfig.getRedisValue(), idempotentConfig.getRedisTimeOut(), TimeUnit.DAYS);
             return proceed;
         } finally {
             RLock stockLock = redissonClient.getLock(key);

@@ -23,12 +23,12 @@
 <dependency>
   <groupId>io.github.weihubeats</groupId>
   <artifactId>wh-mq-rocketmq</artifactId>
-  <version>1.0.6</version>
+  <version>1.0.7</version>
 </dependency>
 ```
 - gradle
 ```xml
-implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.6'
+implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.7'
 ```
 
 ##### aliyun ons-client
@@ -36,7 +36,7 @@ implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.6'
 <dependency>
 <groupId>io.github.weihubeats</groupId>
 <artifactId>wh-mq-aliyun-rocketmq</artifactId>
-<version>1.0.6</version>
+<version>1.0.7</version>
 </dependency>
 ```
 
@@ -78,6 +78,8 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
         idempotentConfig.setRedisValue(redisValue);
         // 去重redis尝试获取锁等待时间 默认1s 单位秒
         idempotentConfig.setTryLockTime(tryLockTime);
+        // 设置处理成功消息存放redis时间 默认 3天
+        idempotentConfig.setRedisTimeOut(redisTimeOut);
         return idempotentConfig;
 
     }
@@ -105,6 +107,7 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 - 1.0.4 : 支持阿里云RocketMQ Client
 - 1.0.5 : 新增支持开源RocketMQ Client，新增自动化配置 `IdempotentConfig.java`
 - 1.0.6 : 优化重复消费重复投递问题，优化代码结构
+- 1.0.7 : 优化redis key 过期时间
 
 ## 未来版本
 
