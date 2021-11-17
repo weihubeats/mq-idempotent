@@ -3,8 +3,7 @@ package com.mq.converter;
 import com.mq.idempotent.core.aop.MessageConverter;
 import org.apache.rocketmq.common.message.MessageExt;
 import org.springframework.stereotype.Component;
-
-import java.util.Objects;
+import org.springframework.util.StringUtils;
 
 /**
  * @author : wh
@@ -17,6 +16,6 @@ public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
 
     @Override
     public String getUniqueKey(MessageExt messageExt) {
-        return Objects.nonNull(messageExt.getKeys()) ? messageExt.getKeys() :messageExt.getMsgId();
+        return !StringUtils.isEmpty(messageExt.getKeys()) ? messageExt.getKeys() :messageExt.getMsgId();
     }
 }

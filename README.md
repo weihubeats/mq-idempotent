@@ -23,12 +23,12 @@
 <dependency>
   <groupId>io.github.weihubeats</groupId>
   <artifactId>wh-mq-rocketmq</artifactId>
-  <version>1.0.7</version>
+  <version>1.0.8</version>
 </dependency>
 ```
 - gradle
 ```xml
-implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.7'
+implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.8'
 ```
 
 ##### aliyun ons-client
@@ -36,7 +36,7 @@ implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.7'
 <dependency>
 <groupId>io.github.weihubeats</groupId>
 <artifactId>wh-mq-aliyun-rocketmq</artifactId>
-<version>1.0.7</version>
+<version>1.0.8</version>
 </dependency>
 ```
 
@@ -107,7 +107,7 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 - 1.0.4 : 支持阿里云RocketMQ Client
 - 1.0.5 : 新增支持开源RocketMQ Client，新增自动化配置 `IdempotentConfig.java`
 - 1.0.6 : 优化重复消费重复投递问题，优化代码结构
-- 1.0.7 : 优化redis key 过期时间
+- 1.0.8 : 优化redis key 过期时间
 
 ## 未来版本
 

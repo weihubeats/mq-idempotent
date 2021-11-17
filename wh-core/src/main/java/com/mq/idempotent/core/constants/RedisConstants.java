@@ -8,7 +8,7 @@ package com.mq.idempotent.core.constants;
 public interface RedisConstants {
 
 
-    String KEY = "mq::unique::";
+    String KEY = "mq:unique:";
 
 
 }

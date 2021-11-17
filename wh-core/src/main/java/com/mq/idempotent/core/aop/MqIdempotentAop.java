@@ -71,7 +71,7 @@ public class MqIdempotentAop {
             log.info("唯一key {}", key);
         }
         if (exitKey(key)) {
-            log.warn("重复消费");
+            log.warn("重复消费 {}", key);
             return isVoid ? null : true;
         }
         if (!lock(key)) {
