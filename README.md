@@ -1,11 +1,13 @@
 ## wh-mq-Idempotent
 
-通用的mq消息幂等去重框架，开箱即用
+通用的mq消息幂等去重框架，开箱即用,支持主流所有mq
 
 1. 需要项目是Springboot项目
 2. 原理很简单基于Spring AOP + Redis做的
-3. 现在暂时只支持aliyun ons-client、RocketMQ Client。后续会慢慢都支持
+3. 现在暂时只支持aliyun ons-client、RocketMQ Client.不支持的可以自己实现MessageConverter去定义,非常轻量方便
 4. 由于目前源代码非常轻量，所以不引用jar直接copy源代码到项目中使用也是可以的
+
+> 由于本地没有rabbitmq、Kafka等,但是需要支持也非常方便,只需要实现MessageConverter 接口,后面有详细说明
 
 
 ## 使用
@@ -83,6 +85,31 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
         return idempotentConfig;
 
     }
+```
+
+## 自定义mq去重
+引入依赖
+```java
+<dependency>
+<groupId>io.github.weihubeats</groupId>
+<artifactId>wh-core</artifactId>
+<version>1.0.8</version>
+</dependency>
+```
+
+实现接口 MessageConverter.java
+例如 支持rocketMQ
+```java
+@Component
+public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
+
+
+    @Override
+    public String getUniqueKey(MessageExt messageExt) {
+        return !StringUtils.isEmpty(messageExt.getKeys()) ? messageExt.getKeys() :messageExt.getMsgId();
+    }
+}
+
 ```
 
 ## 模块说明
