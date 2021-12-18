@@ -1,29 +1,27 @@
 ## wh-mq-Idempotent
 
-<a href="README_zh.md" target="_blank"><b>中文</b></a>
-
-
+通用的mq消息幂等去重框架，开箱即用,支持主流所有mq
 General mq message idempotent deduplication framework, out of the box, supports all mainstream mq
-1. The required project is a Springboot project
-2. The principle is very simple, based on Spring AOP + Redis
-3. For now, only aliyun ons-client and RocketMQ Client are supported. If not, you can implement MessageConverter to define it yourself,
-which is very lightweight and convenient
-4. Since the current source code is very lightweight, it is also possible to copy the source code directly into the project without quoting the jar.
 
-> Since there are no rabbitmq, Kafka, etc. locally, it is also very convenient to support it. You only need to implement the MessageConverter interface,
-> which will be explained in detail later.
+<a href="README_en.md" target="_blank"><b>English</b></a>
+
+1. 需要项目是Springboot项目
+2. 原理很简单基于Spring AOP + Redis做的
+3. 现在暂时只支持aliyun ons-client、RocketMQ Client.不支持的可以自己实现MessageConverter去定义,非常轻量方便
+4. 由于目前源代码非常轻量，所以不引用jar直接copy源代码到项目中使用也是可以的
+
+> 由于本地没有rabbitmq、Kafka等,但是需要支持也非常方便,只需要实现MessageConverter 接口,后面有详细说明
 
 
-
-## use
+## 使用
 
 ####
-Necessary condition
-1. redis(redission)
+必要条件
+1. redis redis使用的是redission
 2. springboot
 3. jdk8+
 
-#### 1. Add dependency
+#### 1. 添加依赖
 ##### rocketmq-client
 - maven
 ```xml
@@ -51,7 +49,7 @@ implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.8'
 ```xml
 implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 ```
-#### 2. Add annotations to methods that need to be idempotent
+#### 2. 在需要幂等的方法上添加注解
 ```java
 @Idempotent
 ```
@@ -66,16 +64,15 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
     }
 ```
 
-> Note, because it is implemented based on AOP, you need to pay attention to the problems caused by AOP failure scenarios
-> The parameter of the added method must be Message, and the return value of the method must be void or boolean,
-> because aop needs to handle repeated consumption and directly returns true or null
-> For more detailed practical methods, please refer to the module wh-mq-Idempotent-samples
+> 注意事项,由于是基于AOP实现的,所以需要注意AOP失效场景导致的问题
+> 添加住的方法的参数必须是 Message,方法返回值必须是void 或者 boolean 因为aop要处理重复消费直接返回 true 或者 null
+> 更详细实用方式请参考模块 wh-mq-Idempotent-samples
 
-## Example reference
-For usage examples, please refer to the wh-mq-Idempotent-samples module
+## 例子参考
+使用例子请参考 wh-mq-Idempotent-samples 模块
 
 
-## Custom configuration
+## 自定义配置
 ```java
     @Bean
     public IdempotentConfig idempotentConfig() {
@@ -93,8 +90,8 @@ For usage examples, please refer to the wh-mq-Idempotent-samples module
     }
 ```
 
-## Custom mq de-duplication
-Introduce dependencies
+## 自定义mq去重
+引入依赖
 ```java
 <dependency>
 <groupId>io.github.weihubeats</groupId>
@@ -103,8 +100,8 @@ Introduce dependencies
 </dependency>
 ```
 
-Implement the interface MessageConverter.java
-For example, support rocketMQ
+实现接口 MessageConverter.java
+例如 支持rocketMQ
 ```java
 @Component
 public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
@@ -118,40 +115,38 @@ public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
 
 ```
 
-## Module description
-- wh-core Core realization
-- wh-mq-rocketmq Rocketmq idempotent core implementation
-- wh-mq-aliyun-rocketmq aliyun client idempotent core implementation
-- wh-mq-Idempotent-samples Usage example
+## 模块说明
+- wh-core 核心实现
+- wh-mq-rocketmq rocketmq幂等核心实现
+- wh-mq-aliyun-rocketmq 阿里云client幂等核心实现
+- wh-mq-Idempotent-samples 使用例子
 
-## Design ideas
+## 设计思路
 
 ![img.png](static/img/img.png)
 
-The general idea of the current redis implementation is as follows
-1. Consumers get MQ consumption information
-2. Based on the business unique key in the configured MQ message, go to reids (Mysql) to determine whether it has been consumed
-3. If there is no consumption, then lock to prevent concurrency problems, if the lock is successful, then consume, if it fails,
-return the consumption failure to let MQ re-deliver, because this prevents the first thread that grabs the lock from failing to execute,
-so it cannot directly return to success, and the following tasks are required. Re-deliver to MQ for re-consumption
-4. After successful execution of the business code, write consumption is successful (write redis or update Mysql)
-5. Release lock
+目前redis实现的大致思路如下
+1. 消费者获取到MQ消费信息
+2. 基于配置的MQ消息中的业务唯一键去reids(Mysql) 判断是否已消费
+3. 如果没有消费则加锁防止并发问题,加锁成功则消费,失败则返回消费失败让MQ重新投递,因为这里防止第一个抢到锁的线程执行失败,所以不能直接返回成功,需要后面的任务重新投递到MQ重新消费
+4. 执行业务代码成功后写入消费成功(写入redis或更新Mysql)
+5. 释放锁
 
-## release version
+## 发布版本
 
-- 1.0.4 : Support Alibaba Cloud RocketMQ Client
-- 1.0.5 : Added support for open source RocketMQ Client, and added automatic configuration `IdempotentConfig.java`
-- 1.0.6 : Optimize the problem of repeated consumption and repeated delivery, and optimize the code structure
-- 1.0.8 : Optimize the redis key expiration time
+- 1.0.4 : 支持阿里云RocketMQ Client
+- 1.0.5 : 新增支持开源RocketMQ Client，新增自动化配置 `IdempotentConfig.java`
+- 1.0.6 : 优化重复消费重复投递问题，优化代码结构
+- 1.0.8 : 优化redis key 过期时间
 
-## Future version
+## 未来版本
 
-1. Support RabbitMQ
-2. Support kafka
-3. Support Mysql de-duplication
-## in development。。。。。。
+1. 支持RabbitMQ
+2. 支持kafka
+3. 支持Mysql去重
+## 正在开发中。。。。。。
 
-## We hope you can join
+## 期待你的加入
 
-Author WeChat:
-![Author WeChat](static/img/wx.jpg)
+作者微信:
+![作者微信](static/img/wx.jpg)
