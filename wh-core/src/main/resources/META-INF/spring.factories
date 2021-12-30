@@ -1,3 +1,2 @@
 org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
-  com.mq.idempotent.core.aop.MqIdempotentAop,\
-  com.mq.idempotent.core.config.IdempotentAutoConfiguration
+  com.mq.idempotent.core.autoconfigure.MqIdempotentAutoConfiguration
