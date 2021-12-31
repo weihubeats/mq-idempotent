@@ -52,7 +52,7 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
         //方法参数
         Object[] args = methodInvocation.getArguments();
         Idempotent annotation = method.getAnnotation(Idempotent.class);
-        String msgID = messageConverter.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("参数异常")));
+        String msgID = messageConverter.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("仅支持第一个消息为Message")));
         String key = idempotentConfig.getRedisKey() + msgID;
         if (log.isDebugEnabled()) {
             log.info("唯一key {}", key);

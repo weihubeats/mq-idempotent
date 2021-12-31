@@ -21,12 +21,12 @@ public class IdempotentConfig {
     private String redisValue;
 
     /**
-     * 并发获取锁等待时间
+     * 并发获取锁等待时间 TimeUnit.SECONDS
      */
     private Long tryLockTime;
 
     /**
-     * 消费key存放redis时间默认3天
+     * 消费key存放redis时间默认3天 TimeUnit.DAYS
      */
     private Long redisTimeOut;
 
