@@ -12,7 +12,6 @@ import org.redisson.api.RedissonClient;
 import java.lang.reflect.Method;
 import java.util.Arrays;
 import java.util.Objects;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author : wh
@@ -72,7 +71,7 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
         try {
             Object proceed = methodInvocation.proceed();
             RBucket<String> bucket = redissonClient.getBucket(key);
-            bucket.set(idempotentConfig.getRedisValue(), idempotentConfig.getRedisTimeOut(), TimeUnit.DAYS);
+            bucket.set(idempotentConfig.getRedisValue(), idempotentConfig.getRedisTimeOut(), idempotentConfig.getRedisTimeOutTimeUnit());
             return proceed;
         } catch (Throwable throwable) {
             log.error("throwable ", throwable);
@@ -86,7 +85,7 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
     public boolean lock(String lockName) {
         RLock stockLock = redissonClient.getLock(lockName);
         try {
-            return stockLock.tryLock(idempotentConfig.getTryLockTime(), TimeUnit.SECONDS);
+            return stockLock.tryLock(idempotentConfig.getTryLockTime(), idempotentConfig.getTryLockTimeUnit());
         } catch (InterruptedException e) {
             e.printStackTrace();
         }

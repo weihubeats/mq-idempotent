@@ -73,6 +73,16 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 
 
 ## 自定义配置
+
+- 基于配置文件自动配置
+```yaml
+idempotent:
+  redisKey: "mq::unique::"
+  redisValue : "ss"
+  tryLockTime: 2
+  redisTimeOut: 3
+```
+- 基于JavaBean
 ```java
     @Bean
     public IdempotentConfig idempotentConfig() {
