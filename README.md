@@ -28,12 +28,12 @@ General mq message idempotent deduplication framework, out of the box, supports 
 <dependency>
   <groupId>io.github.weihubeats</groupId>
   <artifactId>wh-mq-rocketmq</artifactId>
-  <version>1.0.8</version>
+  <version>1.0.9</version>
 </dependency>
 ```
 - gradle
 ```xml
-implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.8'
+implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.9'
 ```
 
 ##### aliyun ons-client
@@ -41,7 +41,7 @@ implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.8'
 <dependency>
 <groupId>io.github.weihubeats</groupId>
 <artifactId>wh-mq-aliyun-rocketmq</artifactId>
-<version>1.0.8</version>
+<version>1.0.9</version>
 </dependency>
 ```
 
@@ -73,6 +73,16 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 
 
 ## 自定义配置
+
+- 基于配置文件自动配置
+```yaml
+idempotent:
+  redisKey: "mq::unique::"
+  redisValue : "ss"
+  tryLockTime: 2
+  redisTimeOut: 3
+```
+- 基于JavaBean
 ```java
     @Bean
     public IdempotentConfig idempotentConfig() {
@@ -96,7 +106,7 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 <dependency>
 <groupId>io.github.weihubeats</groupId>
 <artifactId>wh-core</artifactId>
-<version>1.0.8</version>
+<version>1.0.9</version>
 </dependency>
 ```
 
@@ -137,7 +147,7 @@ public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
 - 1.0.4 : 支持阿里云RocketMQ Client
 - 1.0.5 : 新增支持开源RocketMQ Client，新增自动化配置 `IdempotentConfig.java`
 - 1.0.6 : 优化重复消费重复投递问题，优化代码结构
-- 1.0.8 : 优化redis key 过期时间
+- 1.0.9 : 优化redis key 过期时间
 
 ## 未来版本
 

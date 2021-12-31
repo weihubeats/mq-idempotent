@@ -1,0 +1,14 @@
+spring:
+  application:
+    name: rocketmq
+
+server:
+  port: 9000
+
+
+
+idempotent:
+  redisKey: "mq::unique::"
+  redisValue : "ss"
+  tryLockTime: 2
+  redisTimeOut: 3
