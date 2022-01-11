@@ -19,6 +19,7 @@
         <module>wh-mq-Idempotent-samples</module>
         <module>wh-mq-aliyun-rocketmq</module>
         <module>wh-mq-rocketmq</module>
+        <module>wh-mq-boot-rabbitmq</module>
     </modules>
 
 
