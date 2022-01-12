@@ -7,7 +7,7 @@ General mq message idempotent deduplication framework, out of the box, supports 
 
 1. 需要项目是Springboot项目
 2. 原理很简单基于Spring AOP + Redis做的
-3. 现在暂时只支持aliyun ons-client、RocketMQ Client.不支持的可以自己实现MessageConverter去定义,非常轻量方便
+3. 现在暂时只支持aliyun ons-client、RocketMQ Client、Spring Boot RabbitMQ.不支持的可以自己实现MessageConverter去定义,非常轻量方便
 4. 由于目前源代码非常轻量，所以不引用jar直接copy源代码到项目中使用也是可以的
 
 > 由于本地没有rabbitmq、Kafka等,但是需要支持也非常方便,只需要实现MessageConverter 接口,后面有详细说明
@@ -28,12 +28,12 @@ General mq message idempotent deduplication framework, out of the box, supports 
 <dependency>
   <groupId>io.github.weihubeats</groupId>
   <artifactId>wh-mq-rocketmq</artifactId>
-  <version>1.0.9</version>
+  <version>1.1.0</version>
 </dependency>
 ```
 - gradle
 ```xml
-implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.9'
+implementation 'io.github.weihubeats:wh-mq-rocketmq:1.1.0'
 ```
 
 ##### aliyun ons-client
@@ -41,7 +41,7 @@ implementation 'io.github.weihubeats:wh-mq-rocketmq:1.0.9'
 <dependency>
 <groupId>io.github.weihubeats</groupId>
 <artifactId>wh-mq-aliyun-rocketmq</artifactId>
-<version>1.0.9</version>
+<version>1.1.0</version>
 </dependency>
 ```
 
@@ -106,7 +106,7 @@ idempotent:
 <dependency>
 <groupId>io.github.weihubeats</groupId>
 <artifactId>wh-core</artifactId>
-<version>1.0.9</version>
+<version>1.1.0</version>
 </dependency>
 ```
 
@@ -147,7 +147,9 @@ public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
 - 1.0.4 : 支持阿里云RocketMQ Client
 - 1.0.5 : 新增支持开源RocketMQ Client，新增自动化配置 `IdempotentConfig.java`
 - 1.0.6 : 优化重复消费重复投递问题，优化代码结构
-- 1.0.9 : 优化redis key 过期时间
+- 1.0.8 : 优化redis key 过期时间
+- 1.0.9 : 优化AOP实现方式
+- 1.1.0 : 添加对Spring Boot RabbitMQ支持
 
 ## 未来版本
 

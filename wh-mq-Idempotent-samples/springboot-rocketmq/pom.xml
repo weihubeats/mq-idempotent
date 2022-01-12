@@ -5,7 +5,7 @@
     <parent>
         <artifactId>wh-mq-Idempotent-samples</artifactId>
         <groupId>io.github.weihubeats</groupId>
-        <version>1.0.9</version>
+        <version>1.1.0</version>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
@@ -22,6 +22,10 @@
             <groupId>io.github.weihubeats</groupId>
             <artifactId>wh-mq-rocketmq</artifactId>
             <version>${project.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>org.springframework.boot</groupId>
+            <artifactId>spring-boot-starter-web</artifactId>
         </dependency>
 
     </dependencies>

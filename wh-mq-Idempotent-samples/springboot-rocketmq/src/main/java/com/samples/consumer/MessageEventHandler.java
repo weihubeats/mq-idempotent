@@ -1,8 +1,7 @@
-package com.samples.config;
+package com.samples.consumer;
 
 import com.mq.idempotent.core.annotation.Idempotent;
 import org.apache.rocketmq.common.message.MessageExt;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
