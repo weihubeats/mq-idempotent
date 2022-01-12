@@ -25,9 +25,9 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
 
     private final IdempotentConfig idempotentConfig;
 
-    private final MessageConverter messageConverter;
+    private final MessageConverter<Object> messageConverter;
 
-    public MqIdempotentAnnotationInterceptor(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter messageConverter) {
+    public MqIdempotentAnnotationInterceptor(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter<Object> messageConverter) {
         if (Objects.isNull(redissonClient)) {
             throw new NullPointerException("redissonClient template is null");
         }
@@ -51,7 +51,7 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
         //方法参数
         Object[] args = methodInvocation.getArguments();
         Idempotent annotation = method.getAnnotation(Idempotent.class);
-        String msgID = messageConverter.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("仅支持第一个消息为Message")));
+        String msgID = messageConverter.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("仅支持第一个消息为Message")), annotation.fileName());
         String key = idempotentConfig.getRedisKey() + msgID;
         if (log.isDebugEnabled()) {
             log.info("唯一key {}", key);

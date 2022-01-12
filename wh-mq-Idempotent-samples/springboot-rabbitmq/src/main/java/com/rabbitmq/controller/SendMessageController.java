@@ -1,16 +1,12 @@
 package com.rabbitmq.controller;
 
-import com.alibaba.fastjson.JSON;
 import com.rabbitmq.constants.RabbitMQConstants;
-import org.springframework.amqp.core.Message;
-import org.springframework.amqp.core.MessageProperties;
-import org.springframework.amqp.core.MessagePropertiesBuilder;
+import com.rabbitmq.message.TestMessage;
 import org.springframework.amqp.rabbit.core.RabbitTemplate;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.nio.charset.StandardCharsets;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.HashMap;
@@ -28,15 +24,26 @@ public class SendMessageController {
     @Autowired
     private RabbitTemplate rabbitTemplate;
 
-    @GetMapping("/convert/send")
+    /*@GetMapping("/convert/send")
     public String send(String queueName) {
         Map<String, Object> map = getMessageMap();
         rabbitTemplate.convertAndSend(RabbitMQConstants.TEST_DIRECT_EXCHANGE, RabbitMQConstants.ROUTING_KEY, map);
         return "success";
 
+    }*/
+
+    @GetMapping("/convert/send")
+    public String send1(String queueName) {
+        TestMessage testMessage = new TestMessage();
+        testMessage.setId(1);
+        testMessage.setMsg("test message, hello");
+        rabbitTemplate.convertAndSend(RabbitMQConstants.TEST_DIRECT_EXCHANGE, RabbitMQConstants.ROUTING_KEY, testMessage);
+        return "success";
+
     }
 
-    @GetMapping("/sendMsg")
+
+    /*@GetMapping("/sendMsg")
     public String sendMessage() {
         Map<String, Object> map = getMessageMap();
         // 指定消息类型
@@ -46,7 +53,7 @@ public class SendMessageController {
         Message message = new Message( JSON.toJSONString(map).getBytes(StandardCharsets.UTF_8), props);
         rabbitTemplate.send(RabbitMQConstants.TEST_DIRECT_EXCHANGE, RabbitMQConstants.ROUTING_KEY,message);
         return "success";
-    }
+    }*/
 
     public Map<String, Object> getMessageMap() {
         String messageId = String.valueOf(UUID.randomUUID());

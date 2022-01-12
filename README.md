@@ -147,7 +147,8 @@ public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
 - 1.0.4 : 支持阿里云RocketMQ Client
 - 1.0.5 : 新增支持开源RocketMQ Client，新增自动化配置 `IdempotentConfig.java`
 - 1.0.6 : 优化重复消费重复投递问题，优化代码结构
-- 1.0.9 : 优化redis key 过期时间
+- 1.0.8 : 优化redis key 过期时间
+- 1.0.9 : 优化AOP实现方式
 
 ## 未来版本
 

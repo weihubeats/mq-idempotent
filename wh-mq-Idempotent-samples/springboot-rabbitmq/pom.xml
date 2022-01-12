@@ -30,6 +30,12 @@
             <artifactId>fastjson</artifactId>
             <version>1.2.75</version>
         </dependency>
+
+        <dependency>
+            <groupId>io.github.weihubeats</groupId>
+            <artifactId>wh-mq-boot-rabbitmq</artifactId>
+            <version>${project.version}</version>
+        </dependency>
     </dependencies>
 
 </project>

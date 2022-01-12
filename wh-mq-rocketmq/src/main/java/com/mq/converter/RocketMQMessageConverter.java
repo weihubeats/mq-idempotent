@@ -15,7 +15,7 @@ public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
 
 
     @Override
-    public String getUniqueKey(MessageExt messageExt) {
+    public String getUniqueKey(MessageExt messageExt, String fileName) {
         return !StringUtils.isEmpty(messageExt.getKeys()) ? messageExt.getKeys() :messageExt.getMsgId();
     }
 }
