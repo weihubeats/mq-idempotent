@@ -152,10 +152,9 @@ public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
 - 1.1.0 : 添加对Spring Boot RabbitMQ支持
 
 ## 未来版本
-
-1. 支持RabbitMQ
-2. 支持kafka
-3. 支持Mysql去重
+1. 支持kafka
+2. 支持Mysql去重
+3. 网络两将军问题解决
 ## 正在开发中。。。。。。
 
 ## 期待你的加入
