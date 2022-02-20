@@ -13,4 +13,6 @@ import java.lang.annotation.*;
 public @interface Idempotent {
 
     String fileName() default "msgId";
+
+    boolean lock() default true;
 }
