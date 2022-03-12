@@ -1,6 +1,7 @@
 package com.mq.idempotent.core.aop;
 
 import com.mq.idempotent.core.annotation.Idempotent;
+import com.mq.idempotent.core.exception.MessageConcurrencyException;
 import com.mq.idempotent.core.model.IdempotentConfig;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -62,7 +63,7 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
         }
         if (!lock(key)) {
             log.info("有消息正在消费");
-            throw new Exception("有消息正在消费");
+            throw new MessageConcurrencyException("有消息正在消费");
         }
         return proceed(methodInvocation, key);
     }
