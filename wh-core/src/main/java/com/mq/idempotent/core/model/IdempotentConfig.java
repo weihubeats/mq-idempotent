@@ -1,5 +1,6 @@
 package com.mq.idempotent.core.model;
 
+import com.mq.idempotent.core.config.IdempotentProperties;
 import lombok.Data;
 
 import java.util.concurrent.TimeUnit;
@@ -40,6 +41,14 @@ public class IdempotentConfig {
      * 消费key存放redis时间单位
      */
     private TimeUnit redisTimeOutTimeUnit = TimeUnit.DAYS;
+
+
+    public void initConfig(IdempotentProperties properties) {
+        this.redisKey = properties.getRedisKey();
+        this.redisValue = properties.getRedisValue();
+        this.tryLockTime = properties.getTryLockTime();
+        this.redisTimeOut = properties.getRedisTimeOut();
+    }
 
 
 

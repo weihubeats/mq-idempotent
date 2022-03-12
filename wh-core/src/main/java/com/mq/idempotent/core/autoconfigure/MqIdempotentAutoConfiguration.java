@@ -37,12 +37,8 @@ public class MqIdempotentAutoConfiguration {
     @Bean
     public IdempotentConfig idempotentConfig() {
         IdempotentConfig idempotentConfig = new IdempotentConfig();
-        idempotentConfig.setRedisKey(properties.getRedisKey());
-        idempotentConfig.setRedisValue(properties.getRedisValue());
-        idempotentConfig.setTryLockTime(properties.getTryLockTime());
-        idempotentConfig.setRedisTimeOut(properties.getRedisTimeOut());
+        idempotentConfig.initConfig(properties);
         return idempotentConfig;
-
     }
 
 }

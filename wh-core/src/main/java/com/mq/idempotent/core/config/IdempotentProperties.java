@@ -38,4 +38,9 @@ public class IdempotentProperties {
      */
     private Long redisTimeOut = 3L;
 
+    /**
+     * 是否开启并发控制
+     */
+    private Boolean concurrency = true;
+
 }
