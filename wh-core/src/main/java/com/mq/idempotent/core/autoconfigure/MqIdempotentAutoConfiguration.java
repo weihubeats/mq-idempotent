@@ -41,4 +41,6 @@ public class MqIdempotentAutoConfiguration {
         return idempotentConfig;
     }
 
+
+
 }

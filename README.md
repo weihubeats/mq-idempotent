@@ -12,6 +12,9 @@ General mq message idempotent deduplication framework, out of the box, supports 
 
 > 由于本地没有rabbitmq、Kafka等,但是需要支持也非常方便,只需要实现MessageConverter 接口,后面有详细说明
 
+## 分支说明
+- master: 最新稳定代码
+- develop: 正在开发中的代码
 
 ## 使用
 
