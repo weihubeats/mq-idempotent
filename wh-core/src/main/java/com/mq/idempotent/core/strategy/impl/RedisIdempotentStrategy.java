@@ -1,5 +1,6 @@
 package com.mq.idempotent.core.strategy.impl;
 
+import com.mq.idempotent.core.aop.MessageConverter;
 import com.mq.idempotent.core.model.IdempotentConfig;
 import com.mq.idempotent.core.strategy.AbstractIdempotentStrategy;
 import org.redisson.api.RBucket;
@@ -15,8 +16,8 @@ public class RedisIdempotentStrategy extends AbstractIdempotentStrategy {
 
     private final RedissonClient redissonClient;
 
-    public RedisIdempotentStrategy(IdempotentConfig idempotentConfig, RedissonClient redissonClient) {
-        super(idempotentConfig);
+    public RedisIdempotentStrategy(IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter, RedissonClient redissonClient) {
+        super(idempotentConfig, messageConverter);
         this.redissonClient = redissonClient;
     }
 

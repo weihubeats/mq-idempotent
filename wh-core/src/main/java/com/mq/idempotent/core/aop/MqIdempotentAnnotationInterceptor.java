@@ -2,7 +2,6 @@ package com.mq.idempotent.core.aop;
 
 import com.mq.idempotent.core.annotation.Idempotent;
 import com.mq.idempotent.core.exception.MessageConcurrencyException;
-import com.mq.idempotent.core.model.IdempotentConfig;
 import com.mq.idempotent.core.strategy.IdempotentStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
@@ -19,17 +18,10 @@ import java.util.Arrays;
 @Slf4j
 public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
 
-
-    private final IdempotentConfig idempotentConfig;
-
-    private final MessageConverter<Object> messageConverter;
-
     private final IdempotentStrategy idempotentStrategy;
 
-    public MqIdempotentAnnotationInterceptor(IdempotentStrategy idempotentStrategy, IdempotentConfig idempotentConfig, MessageConverter<Object> messageConverter) {
+    public MqIdempotentAnnotationInterceptor(IdempotentStrategy idempotentStrategy) {
         this.idempotentStrategy = idempotentStrategy;
-        this.idempotentConfig = idempotentConfig;
-        this.messageConverter = messageConverter;
     }
 
 
@@ -47,8 +39,7 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
         //方法参数
         Object[] args = methodInvocation.getArguments();
         Idempotent annotation = method.getAnnotation(Idempotent.class);
-        String msgID = messageConverter.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("仅支持第一个消息为Message")), annotation.fileName());
-        String key = idempotentConfig.getUniqueKey() + msgID;
+        String key = idempotentStrategy.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("仅支持第一个消息为Message")), annotation.field());
         if (log.isDebugEnabled()) {
             log.info("唯一key {}", key);
         }

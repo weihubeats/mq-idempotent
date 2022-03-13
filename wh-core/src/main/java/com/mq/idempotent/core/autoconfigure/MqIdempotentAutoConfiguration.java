@@ -7,8 +7,12 @@ import com.mq.idempotent.core.aop.MqIdempotentAnnotationInterceptor;
 import com.mq.idempotent.core.config.IdempotentProperties;
 import com.mq.idempotent.core.model.IdempotentConfig;
 import com.mq.idempotent.core.strategy.IdempotentStrategy;
+import com.mq.idempotent.core.strategy.impl.RedisIdempotentStrategy;
 import lombok.AllArgsConstructor;
+import org.redisson.api.RedissonClient;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
+import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -27,8 +31,8 @@ public class MqIdempotentAutoConfiguration {
 
 
     @Bean
-    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(IdempotentStrategy idempotentStrategy, IdempotentConfig idempotentConfig, MessageConverter messageConverter) {
-        MqIdempotentAnnotationInterceptor advisor = new MqIdempotentAnnotationInterceptor(idempotentStrategy, idempotentConfig, messageConverter);
+    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(IdempotentStrategy idempotentStrategy) {
+        MqIdempotentAnnotationInterceptor advisor = new MqIdempotentAnnotationInterceptor(idempotentStrategy);
         return new MqIdempotentAnnotationAdvisor(advisor, Idempotent.class);
     }
 
@@ -39,6 +43,13 @@ public class MqIdempotentAutoConfiguration {
         IdempotentConfig idempotentConfig = new IdempotentConfig();
         idempotentConfig.initConfig(properties);
         return idempotentConfig;
+    }
+
+    @Bean
+    @ConditionalOnClass(RedissonClient.class)
+    @ConditionalOnProperty(prefix = IdempotentProperties.PREFIX + ".strategy", value = "redis", matchIfMissing = true, havingValue = "true")
+    public IdempotentStrategy idempotentStrategy(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter) {
+        return new RedisIdempotentStrategy(idempotentConfig, messageConverter, redissonClient);
     }
 
 

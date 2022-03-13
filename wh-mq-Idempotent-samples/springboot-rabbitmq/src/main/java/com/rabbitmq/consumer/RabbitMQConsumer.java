@@ -27,7 +27,7 @@ public class RabbitMQConsumer {
 
     @RabbitHandler
     @RabbitListener(queues = RabbitMQConstants.QUEUE_NAME)
-    @Idempotent(fileName = "id")
+    @Idempotent(field = "id")
     public void consumerTestMessage(TestMessage testMessage) {
         System.out.println("DirectReceiver消费者收到消息  : " + testMessage.toString());
     }
