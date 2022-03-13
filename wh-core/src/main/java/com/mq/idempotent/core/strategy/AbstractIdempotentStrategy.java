@@ -24,4 +24,20 @@ public abstract class AbstractIdempotentStrategy implements IdempotentStrategy{
         return idempotentConfig.getTryLockTimeUnit();
     }
 
+    public IdempotentConfig getIdempotentConfig() {
+        return idempotentConfig;
+    }
+
+    public String getUniqueValue() {
+        return idempotentConfig.getUniqueValue();
+    }
+
+    public Long getKeyTimeOut() {
+        return idempotentConfig.getKeyTimeOut();
+    }
+
+    public TimeUnit getTimeOutTimeUnit() {
+        return idempotentConfig.getTimeOutTimeUnit();
+    }
+
 }

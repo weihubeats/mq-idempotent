@@ -4,10 +4,10 @@ import com.mq.idempotent.core.annotation.Idempotent;
 import com.mq.idempotent.core.aop.MessageConverter;
 import com.mq.idempotent.core.aop.MqIdempotentAnnotationAdvisor;
 import com.mq.idempotent.core.aop.MqIdempotentAnnotationInterceptor;
-import com.mq.idempotent.core.model.IdempotentConfig;
 import com.mq.idempotent.core.config.IdempotentProperties;
+import com.mq.idempotent.core.model.IdempotentConfig;
+import com.mq.idempotent.core.strategy.IdempotentStrategy;
 import lombok.AllArgsConstructor;
-import org.redisson.api.RedissonClient;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
@@ -27,8 +27,8 @@ public class MqIdempotentAutoConfiguration {
 
 
     @Bean
-    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter messageConverter) {
-        MqIdempotentAnnotationInterceptor advisor = new MqIdempotentAnnotationInterceptor(redissonClient, idempotentConfig, messageConverter);
+    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(IdempotentStrategy idempotentStrategy, IdempotentConfig idempotentConfig, MessageConverter messageConverter) {
+        MqIdempotentAnnotationInterceptor advisor = new MqIdempotentAnnotationInterceptor(idempotentStrategy, idempotentConfig, messageConverter);
         return new MqIdempotentAnnotationAdvisor(advisor, Idempotent.class);
     }
 

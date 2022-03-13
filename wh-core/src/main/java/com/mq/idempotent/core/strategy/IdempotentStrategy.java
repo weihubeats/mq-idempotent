@@ -9,7 +9,11 @@ public interface IdempotentStrategy {
 
     boolean lock(String lockName);
 
-    void save(String uniqeKey);
+    void save(String uniqueKey);
+
+    void unlock(String lockName);
+
+    boolean exitKey(String key);
 
 
 

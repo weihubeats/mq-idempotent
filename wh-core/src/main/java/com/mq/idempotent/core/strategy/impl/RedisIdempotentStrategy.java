@@ -2,6 +2,7 @@ package com.mq.idempotent.core.strategy.impl;
 
 import com.mq.idempotent.core.model.IdempotentConfig;
 import com.mq.idempotent.core.strategy.AbstractIdempotentStrategy;
+import org.redisson.api.RBucket;
 import org.redisson.api.RLock;
 import org.redisson.api.RedissonClient;
 
@@ -31,7 +32,20 @@ public class RedisIdempotentStrategy extends AbstractIdempotentStrategy {
     }
 
     @Override
-    public void save(String uniqeKey) {
+    public void save(String uniqueKey) {
+        RBucket<String> bucket = redissonClient.getBucket(uniqueKey);
+        bucket.set(getUniqueValue(), getKeyTimeOut(), getTimeOutTimeUnit());
+    }
 
+    @Override
+    public void unlock(String lockName) {
+        RLock stockLock = redissonClient.getLock(lockName);
+        stockLock.unlock();
+    }
+
+    @Override
+    public boolean exitKey(String key) {
+        RBucket<String> stockLock = redissonClient.getBucket(key);
+        return stockLock.isExists();
     }
 }

@@ -18,13 +18,24 @@ public class JDBCIdempotentStrategy extends AbstractIdempotentStrategy {
         this.jdbcTemplate = jdbcTemplate;
     }
 
+
     @Override
     public boolean lock(String lockName) {
         return false;
     }
 
     @Override
-    public void save(String uniqeKey) {
+    public void save(String uniqueKey) {
 
+    }
+
+    @Override
+    public void unlock(String lockName) {
+
+    }
+
+    @Override
+    public boolean exitKey(String key) {
+        return false;
     }
 }

@@ -14,14 +14,14 @@ import java.util.concurrent.TimeUnit;
 public class IdempotentConfig {
 
     /**
-     * 去重key redis名字
+     * 唯一key 消息去重key
      */
-    private String redisKey;
+    private String uniqueKey;
 
     /**
-     * redis值
+     * 去重值
      */
-    private String redisValue;
+    private String uniqueValue;
 
     /**
      * 并发获取锁等待时间 TimeUnit.SECONDS
@@ -33,21 +33,21 @@ public class IdempotentConfig {
     private TimeUnit tryLockTimeUnit = TimeUnit.SECONDS;
 
     /**
-     * 消费key存放redis时间默认3天
+     * 存放已消费消息时间，过期则删除。
      */
-    private Long redisTimeOut;
+    private Long keyTimeOut;
 
     /**
      * 消费key存放redis时间单位
      */
-    private TimeUnit redisTimeOutTimeUnit = TimeUnit.DAYS;
+    private TimeUnit timeOutTimeUnit = TimeUnit.DAYS;
 
 
     public void initConfig(IdempotentProperties properties) {
-        this.redisKey = properties.getRedisKey();
-        this.redisValue = properties.getRedisValue();
+        this.uniqueKey = properties.getUniqueKey();
+        this.uniqueValue = properties.getUniqueValue();
         this.tryLockTime = properties.getTryLockTime();
-        this.redisTimeOut = properties.getRedisTimeOut();
+        this.keyTimeOut = properties.getKeyTimeOut();
     }
 
 

@@ -21,12 +21,12 @@ public class IdempotentProperties {
     /**
      * 去重key redis名字
      */
-    private String redisKey = "mq::unique::";
+    private String uniqueKey = "mq::unique::";
 
     /**
      * redis值
      */
-    private String redisValue = "s";
+    private String uniqueValue = "s";
 
     /**
      * 并发获取锁等待时间
@@ -34,9 +34,9 @@ public class IdempotentProperties {
     private Long tryLockTime = 1L;
 
     /**
-     * 消费key存放redis时间默认3天
+     * 消费key存放时间默认3天
      */
-    private Long redisTimeOut = 3L;
+    private Long keyTimeOut = 3L;
 
     /**
      * 是否开启并发控制

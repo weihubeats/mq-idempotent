@@ -3,16 +3,13 @@ package com.mq.idempotent.core.aop;
 import com.mq.idempotent.core.annotation.Idempotent;
 import com.mq.idempotent.core.exception.MessageConcurrencyException;
 import com.mq.idempotent.core.model.IdempotentConfig;
+import com.mq.idempotent.core.strategy.IdempotentStrategy;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
-import org.redisson.api.RBucket;
-import org.redisson.api.RLock;
-import org.redisson.api.RedissonClient;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.Objects;
 
 /**
  * @author : wh
@@ -22,17 +19,15 @@ import java.util.Objects;
 @Slf4j
 public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
 
-    private final RedissonClient redissonClient;
 
     private final IdempotentConfig idempotentConfig;
 
     private final MessageConverter<Object> messageConverter;
 
-    public MqIdempotentAnnotationInterceptor(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter<Object> messageConverter) {
-        if (Objects.isNull(redissonClient)) {
-            throw new NullPointerException("redissonClient template is null");
-        }
-        this.redissonClient = redissonClient;
+    private final IdempotentStrategy idempotentStrategy;
+
+    public MqIdempotentAnnotationInterceptor(IdempotentStrategy idempotentStrategy, IdempotentConfig idempotentConfig, MessageConverter<Object> messageConverter) {
+        this.idempotentStrategy = idempotentStrategy;
         this.idempotentConfig = idempotentConfig;
         this.messageConverter = messageConverter;
     }
@@ -53,15 +48,15 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
         Object[] args = methodInvocation.getArguments();
         Idempotent annotation = method.getAnnotation(Idempotent.class);
         String msgID = messageConverter.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("仅支持第一个消息为Message")), annotation.fileName());
-        String key = idempotentConfig.getRedisKey() + msgID;
+        String key = idempotentConfig.getUniqueKey() + msgID;
         if (log.isDebugEnabled()) {
             log.info("唯一key {}", key);
         }
-        if (exitKey(key)) {
+        if (idempotentStrategy.exitKey(key)) {
             log.warn("重复消费 {}", key);
             return isVoid ? null : true;
         }
-        if (!lock(key)) {
+        if (!idempotentStrategy.lock(key)) {
             log.info("有消息正在消费");
             throw new MessageConcurrencyException("有消息正在消费");
         }
@@ -71,30 +66,14 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
     public Object proceed(MethodInvocation methodInvocation, String key) {
         try {
             Object proceed = methodInvocation.proceed();
-            RBucket<String> bucket = redissonClient.getBucket(key);
-            bucket.set(idempotentConfig.getRedisValue(), idempotentConfig.getRedisTimeOut(), idempotentConfig.getRedisTimeOutTimeUnit());
+            idempotentStrategy.save(key);
             return proceed;
         } catch (Throwable throwable) {
             log.error("throwable ", throwable);
             throw new RuntimeException(throwable);
         } finally {
-            RLock stockLock = redissonClient.getLock(key);
-            stockLock.unlock();
+            idempotentStrategy.unlock(key);
         }
     }
 
-    public boolean lock(String lockName) {
-        RLock stockLock = redissonClient.getLock(lockName);
-        try {
-            return stockLock.tryLock(idempotentConfig.getTryLockTime(), idempotentConfig.getTryLockTimeUnit());
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-        return false;
-    }
-
-    public boolean exitKey(String key) {
-        RBucket<String> stockLock = redissonClient.getBucket(key);
-        return stockLock.isExists();
-    }
 }
