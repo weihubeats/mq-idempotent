@@ -35,7 +35,7 @@ public class MqIdempotentAnnotationAdvisor extends AbstractPointcutAdvisor imple
     private final Class<? extends Annotation> annotation;
 
     public MqIdempotentAnnotationAdvisor(@NonNull MethodInterceptor advice,
-                                                 @NonNull Class<? extends Annotation> annotation) {
+                                         @NonNull Class<? extends Annotation> annotation) {
         this.advice = advice;
         this.annotation = annotation;
         this.pointcut = buildPointcut();

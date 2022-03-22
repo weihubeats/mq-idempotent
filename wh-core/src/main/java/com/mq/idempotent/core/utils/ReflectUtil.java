@@ -19,7 +19,6 @@ public class ReflectUtil {
     private static final SimpleCache<Class<?>, Field[]> FIELDS_CACHE = new SimpleCache<>();
 
 
-
     /**
      * 获取字段值
      *
@@ -63,7 +62,6 @@ public class ReflectUtil {
      * @param <T>              AccessibleObject的子类，比如Class、Method、Field等
      * @param accessibleObject 可设置访问权限的对象，比如Class、Method、Field等
      * @return 被设置可访问的对象
-     * @since 4.6.8
      */
     public static <T extends AccessibleObject> T setAccessible(T accessibleObject) {
         if (null != accessibleObject && false == accessibleObject.isAccessible()) {
@@ -90,7 +88,6 @@ public class ReflectUtil {
      *
      * @param field 字段
      * @return 字段名
-     * @since 5.1.6
      */
     public static String getFieldName(Field field) {
         if (null == field) {
@@ -139,7 +136,6 @@ public class ReflectUtil {
 
         return allFields;
     }
-
 
 
 }

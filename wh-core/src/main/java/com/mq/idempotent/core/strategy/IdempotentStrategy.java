@@ -18,5 +18,4 @@ public interface IdempotentStrategy extends MessageConverter {
     boolean exitKey(String key);
 
 
-
 }

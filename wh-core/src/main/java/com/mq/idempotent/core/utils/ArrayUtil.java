@@ -74,7 +74,6 @@ public class ArrayUtil {
      * @param matcher 匹配接口，实现此接口自定义匹配规则
      * @param array   数组
      * @return 匹配元素，如果不存在匹配元素或数组为空，返回 {@code null}
-     * @since 3.0.7
      */
     @SuppressWarnings("unchecked")
     public static <T> T firstMatch(Matcher<T> matcher, T... array) {
@@ -93,7 +92,6 @@ public class ArrayUtil {
      * @param matcher 匹配接口，实现此接口自定义匹配规则
      * @param array   数组
      * @return 匹配到元素的位置，-1表示未匹配到
-     * @since 5.6.6
      */
     @SuppressWarnings("unchecked")
     public static <T> int matchIndex(Matcher<T> matcher, T... array) {
@@ -108,7 +106,6 @@ public class ArrayUtil {
      * @param beginIndexInclude 检索开始的位置
      * @param array             数组
      * @return 匹配到元素的位置，-1表示未匹配到
-     * @since 5.7.3
      */
     @SuppressWarnings("unchecked")
     public static <T> int matchIndex(Matcher<T> matcher, int beginIndexInclude, T... array) {
@@ -162,7 +159,6 @@ public class ArrayUtil {
      * @param index       插入位置，此位置为对应此位置元素之前的空档
      * @param newElements 新元素
      * @return 新数组
-     * @since 4.0.8
      */
     @SuppressWarnings("unchecked")
     public static <T> T[] insert(T[] buffer, int index, T... newElements) {
