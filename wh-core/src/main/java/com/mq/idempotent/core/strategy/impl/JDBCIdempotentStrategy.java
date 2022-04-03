@@ -1,5 +1,6 @@
 package com.mq.idempotent.core.strategy.impl;
 
+import com.mq.idempotent.core.aop.MessageConverter;
 import com.mq.idempotent.core.model.IdempotentConfig;
 import com.mq.idempotent.core.strategy.AbstractIdempotentStrategy;
 import org.springframework.jdbc.core.JdbcTemplate;
@@ -13,8 +14,8 @@ public class JDBCIdempotentStrategy extends AbstractIdempotentStrategy {
 
     private final JdbcTemplate jdbcTemplate;
 
-    public JDBCIdempotentStrategy(IdempotentConfig idempotentConfig, JdbcTemplate jdbcTemplate) {
-        super(idempotentConfig);
+    public JDBCIdempotentStrategy(IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter, JdbcTemplate jdbcTemplate) {
+        super(idempotentConfig, messageConverter);
         this.jdbcTemplate = jdbcTemplate;
     }
 
