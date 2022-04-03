@@ -157,7 +157,7 @@ public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
 ## 未来版本
 1. 支持kafka
 2. 支持Mysql去重
-3. 网络两将军问题解决
+3. 网络两将军问题处理
 ## 正在开发中。。。。。。
 
 ## 期待你的加入
