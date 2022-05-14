@@ -1,3 +1,5 @@
+![img.png](static/img/logo.png)
+
 ## wh-mq-Idempotent
 
 通用的mq消息幂等去重框架，开箱即用,支持主流所有mq</br>
