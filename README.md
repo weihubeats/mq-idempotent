@@ -164,3 +164,11 @@ public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
 
 作者微信:
 ![作者微信](static/img/wx.jpg)
+
+## 鸣谢
+
+感谢 JetBrains 提供的免费开源 License：
+
+<p>
+    <img src="https://images.gitee.com/uploads/images/2020/0406/220236_f5275c90_5531506.png" alt="图片引用自lets-mica" style="float:left;">
+</p>
