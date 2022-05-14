@@ -12,7 +12,7 @@ import java.util.concurrent.TimeUnit;
  * @description:
  */
 @AllArgsConstructor
-public abstract class AbstractIdempotentStrategy implements IdempotentStrategy{
+public abstract class AbstractIdempotentStrategy implements IdempotentStrategy {
 
     private final IdempotentConfig idempotentConfig;
 
