@@ -23,7 +23,7 @@ import com.mq.idempotent.core.aop.MqIdempotentAnnotationAdvisor;
 import com.mq.idempotent.core.aop.MqIdempotentAnnotationInterceptor;
 import com.mq.idempotent.core.config.IdempotentProperties;
 import com.mq.idempotent.core.model.IdempotentConfig;
-import com.mq.idempotent.core.strategy.IdempotentStrategy;
+import com.mq.idempotent.core.strategy.AbstractIdempotentStrategy;
 import com.mq.idempotent.core.strategy.impl.RedisIdempotentStrategy;
 import lombok.AllArgsConstructor;
 import org.redisson.api.RedissonClient;
@@ -48,7 +48,7 @@ public class MqIdempotentAutoConfiguration {
 
 
     @Bean
-    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(IdempotentStrategy idempotentStrategy) {
+    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(AbstractIdempotentStrategy idempotentStrategy) {
         MqIdempotentAnnotationInterceptor advisor = new MqIdempotentAnnotationInterceptor(idempotentStrategy);
         return new MqIdempotentAnnotationAdvisor(advisor, Idempotent.class);
     }
@@ -65,7 +65,7 @@ public class MqIdempotentAutoConfiguration {
     @Bean
     @ConditionalOnClass(RedissonClient.class)
     @ConditionalOnProperty(prefix = IdempotentProperties.PREFIX + ".strategy", value = "redis", matchIfMissing = true, havingValue = "true")
-    public IdempotentStrategy idempotentStrategy(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter) {
+    public AbstractIdempotentStrategy idempotentStrategy(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter) {
         return new RedisIdempotentStrategy(idempotentConfig, messageConverter, redissonClient);
     }
 

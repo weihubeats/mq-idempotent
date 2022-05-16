@@ -21,6 +21,7 @@ import com.mq.idempotent.core.aop.MessageConverter;
 import com.mq.idempotent.core.model.IdempotentConfig;
 import lombok.AllArgsConstructor;
 
+import java.lang.reflect.Method;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -43,9 +44,9 @@ public abstract class AbstractIdempotentStrategy implements IdempotentStrategy {
         return idempotentConfig.getTryLockTimeUnit();
     }
 
-    public String getUniqueKey(Object o, String field) {
+    public String getUniqueKey(Object o, String field, Method method, Object[] args) {
         String uniqueKey = idempotentConfig.getUniqueKey();
-        return uniqueKey + messageConverter.getUniqueKey(o, field);
+        return uniqueKey + messageConverter.getUniqueKey(o, field, method, args);
     }
 
     public IdempotentConfig getIdempotentConfig() {

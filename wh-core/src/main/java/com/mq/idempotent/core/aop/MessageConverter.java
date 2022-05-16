@@ -17,13 +17,23 @@
 
 package com.mq.idempotent.core.aop;
 
+import java.lang.reflect.Method;
+
 /**
  * @author : wh
  * @date : 2021/11/15 13:51
  * @description: 消息转换器
  */
 public interface MessageConverter<T> {
-    
-    String getUniqueKey(T t, String field);
+
+    /**
+     * 
+     * @param t 消息
+     * @param field 注解 Idempotent 中的 field值
+     * @param method 被拦截方法
+     * @param args 被拦截方法参数
+     * @return
+     */
+    String getUniqueKey(T t, String field, Method method, Object[] args);
 
 }
