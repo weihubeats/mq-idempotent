@@ -29,6 +29,10 @@ import java.lang.annotation.*;
 @Documented
 public @interface Idempotent {
 
+    /**
+     * idempotent property
+     * @return
+     */
     String field() default "msgId";
 
     boolean lock() default true;

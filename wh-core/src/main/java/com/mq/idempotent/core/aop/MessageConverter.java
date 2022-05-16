@@ -23,7 +23,7 @@ package com.mq.idempotent.core.aop;
  * @description: 消息转换器
  */
 public interface MessageConverter<T> {
-
-    String getUniqueKey(T t, String fileName);
+    
+    String getUniqueKey(T t, String field);
 
 }

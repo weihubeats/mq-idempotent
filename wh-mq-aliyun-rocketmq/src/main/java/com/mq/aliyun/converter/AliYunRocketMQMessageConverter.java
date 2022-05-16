@@ -13,7 +13,7 @@ public class AliYunRocketMQMessageConverter implements MessageConverter<Message>
 
 
     @Override
-    public String getUniqueKey(Message message, String fileName) {
+    public String getUniqueKey(Message message, String field) {
         String messageKey = message.getKey();
         return !StringUtils.isEmpty(messageKey) ? messageKey : message.getMsgID();
     }

@@ -12,9 +12,9 @@ public class RabbitMQConverter implements MessageConverter<Object> {
 
 
     @Override
-    public String getUniqueKey(Object o, String fileName) {
+    public String getUniqueKey(Object o, String field) {
         try {
-            return ReflectUtil.getFieldValue(o, fileName).toString();
+            return ReflectUtil.getFieldValue(o, field).toString();
         } catch (Exception e) {
             throw new RuntimeException(e);
         }
