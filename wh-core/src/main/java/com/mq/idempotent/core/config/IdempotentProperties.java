@@ -38,7 +38,7 @@ public class IdempotentProperties {
     /**
      * 去重key redis名字
      */
-    private String uniqueKey = "mq::unique::";
+    private String uniqueKey = "mq:unique:";
 
     /**
      * redis值
