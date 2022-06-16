@@ -26,7 +26,7 @@ import java.util.stream.Collectors;
 @Slf4j
 public class ExtensionLoader<T> {
 
-    private static final String SHENYU_DIRECTORY = "META-INF/wh/";
+    private static final String WH_DIRECTORY = "META-INF/wh/";
 
     private static final Map<Class<?>, ExtensionLoader<?>> LOADERS = new ConcurrentHashMap<>();
 
@@ -210,7 +210,7 @@ public class ExtensionLoader<T> {
      * Load files under SHENYU_DIRECTORY.
      */
     private void loadDirectory(final Map<String, Class<?>> classes) {
-        String fileName = SHENYU_DIRECTORY + clazz.getName();
+        String fileName = WH_DIRECTORY + clazz.getName();
         try {
             Enumeration<URL> urls = Objects.nonNull(this.classLoader) ? classLoader.getResources(fileName)
                     : ClassLoader.getSystemResources(fileName);

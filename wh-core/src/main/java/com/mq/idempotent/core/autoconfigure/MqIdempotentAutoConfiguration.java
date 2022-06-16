@@ -64,8 +64,14 @@ public class MqIdempotentAutoConfiguration {
 
     @Bean
     @ConditionalOnClass(RedissonClient.class)
-    @ConditionalOnProperty(prefix = IdempotentProperties.PREFIX + ".strategy", value = "redis", matchIfMissing = true, havingValue = "true")
-    public AbstractIdempotentStrategy idempotentStrategy(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter) {
+    @ConditionalOnProperty(prefix = IdempotentProperties.PREFIX + ".strategy", value = "jdbc", havingValue = "true")
+    public AbstractIdempotentStrategy jdbcIdempotentStrategy(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter) {
+        return new RedisIdempotentStrategy(idempotentConfig, messageConverter, redissonClient);
+    }
+
+    @Bean
+    @ConditionalOnClass(AbstractIdempotentStrategy.class)
+    public AbstractIdempotentStrategy redisIdempotentStrategy(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter) {
         return new RedisIdempotentStrategy(idempotentConfig, messageConverter, redissonClient);
     }
 
