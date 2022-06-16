@@ -31,9 +31,9 @@ import java.util.concurrent.TimeUnit;
 public class IdempotentConfig {
 
     /**
-     * 唯一key 消息去重key
+     * 去重key 前缀
      */
-    private String uniqueKey;
+    private String uniqueKeyPrefix;
 
     /**
      * 去重值
@@ -66,7 +66,7 @@ public class IdempotentConfig {
 
 
     public void initConfig(IdempotentProperties properties) {
-        this.uniqueKey = properties.getUniqueKey();
+        this.uniqueKeyPrefix = properties.getUniqueKeyPrefix();
         this.uniqueValue = properties.getUniqueValue();
         this.tryLockTime = properties.getTryLockTime();
         this.keyTimeOut = properties.getKeyTimeOut();

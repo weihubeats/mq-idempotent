@@ -60,7 +60,7 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
         //方法参数
         Object[] args = methodInvocation.getArguments();
         Idempotent annotation = method.getAnnotation(Idempotent.class);
-        String key = idempotentStrategy.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("仅支持第一个消息为Message")), annotation.field(), method, args);
+        String key = idempotentStrategy.getUniqueKey(Arrays.stream(args).findFirst().orElseThrow(() -> new Exception("去重第一个参数不能为空")), annotation.field(), method, args);
         if (log.isDebugEnabled()) {
             log.info("唯一key {}", key);
         }

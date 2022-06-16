@@ -123,8 +123,8 @@ public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
 
 
     @Override
-    public String getUniqueKey(MessageExt messageExt) {
-        return !StringUtils.isEmpty(messageExt.getKeys()) ? messageExt.getKeys() :messageExt.getMsgId();
+    public String getUniqueKey(MessageExt messageExt, String field, Method method, Object[] args) {
+        return StringUtils.isNoneBlank(messageExt.getKeys()) ? messageExt.getKeys() :messageExt.getMsgId();
     }
 }
 

@@ -29,7 +29,7 @@ public interface MessageConverter<T> {
     /**
      * 
      * @param t 消息
-     * @param field 注解 Idempotent 中的 field值
+     * @param field 注解 Idempotent 中的 field值 
      * @param method 被拦截方法
      * @param args 被拦截方法参数
      * @return

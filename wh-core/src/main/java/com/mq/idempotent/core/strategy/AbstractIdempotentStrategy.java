@@ -34,7 +34,7 @@ public abstract class AbstractIdempotentStrategy implements IdempotentStrategy {
 
     private final IdempotentConfig idempotentConfig;
 
-    private final MessageConverter messageConverter;
+    private final MessageConverter<Object> messageConverter;
 
     public Long getTryLockTime() {
         return idempotentConfig.getTryLockTime();
@@ -45,8 +45,8 @@ public abstract class AbstractIdempotentStrategy implements IdempotentStrategy {
     }
 
     public String getUniqueKey(Object o, String field, Method method, Object[] args) {
-        String uniqueKey = idempotentConfig.getUniqueKey();
-        return uniqueKey + messageConverter.getUniqueKey(o, field, method, args);
+        String uniqueKeyPrefix = idempotentConfig.getUniqueKeyPrefix();
+        return uniqueKeyPrefix + messageConverter.getUniqueKey(o, field, method, args);
     }
 
     public IdempotentConfig getIdempotentConfig() {
