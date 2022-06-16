@@ -17,6 +17,7 @@
 
 package com.mq.idempotent.core.aop;
 
+import com.mq.idempotent.core.alert.strategy.AlertStrategy;
 import com.mq.idempotent.core.annotation.Idempotent;
 import com.mq.idempotent.core.exception.MessageConcurrencyException;
 import com.mq.idempotent.core.strategy.AbstractIdempotentStrategy;
@@ -37,8 +38,11 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
 
     private final AbstractIdempotentStrategy idempotentStrategy;
 
-    public MqIdempotentAnnotationInterceptor(AbstractIdempotentStrategy idempotentStrategy) {
+    private final AlertStrategy alertStrategy;
+
+    public MqIdempotentAnnotationInterceptor(AbstractIdempotentStrategy idempotentStrategy, AlertStrategy alertStrategy) {
         this.idempotentStrategy = idempotentStrategy;
+        this.alertStrategy = alertStrategy;
     }
 
 
@@ -66,6 +70,7 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
         }
         if (!idempotentStrategy.lock(key)) {
             log.info("有消息正在消费");
+            // 抛出异常依赖mq自动重试
             throw new MessageConcurrencyException("有消息正在消费");
         }
         return proceed(methodInvocation, key);
@@ -77,6 +82,8 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
             idempotentStrategy.save(key);
             return proceed;
         } catch (Throwable throwable) {
+            // 监控
+            alertStrategy.sendMsg("");
             log.error("throwable ", throwable);
             throw new RuntimeException(throwable);
         } finally {

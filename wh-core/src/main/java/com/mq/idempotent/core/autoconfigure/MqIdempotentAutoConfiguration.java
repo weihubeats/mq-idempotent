@@ -17,6 +17,8 @@
 
 package com.mq.idempotent.core.autoconfigure;
 
+import com.mq.idempotent.core.alert.strategy.AlertStrategy;
+import com.mq.idempotent.core.alert.strategy.AlertStrategyFactory;
 import com.mq.idempotent.core.annotation.Idempotent;
 import com.mq.idempotent.core.aop.MessageConverter;
 import com.mq.idempotent.core.aop.MqIdempotentAnnotationAdvisor;
@@ -48,8 +50,8 @@ public class MqIdempotentAutoConfiguration {
 
 
     @Bean
-    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(AbstractIdempotentStrategy idempotentStrategy) {
-        MqIdempotentAnnotationInterceptor advisor = new MqIdempotentAnnotationInterceptor(idempotentStrategy);
+    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(AbstractIdempotentStrategy idempotentStrategy, AlertStrategy alertStrategy) {
+        MqIdempotentAnnotationInterceptor advisor = new MqIdempotentAnnotationInterceptor(idempotentStrategy, alertStrategy);
         return new MqIdempotentAnnotationAdvisor(advisor, Idempotent.class);
     }
 
@@ -60,6 +62,11 @@ public class MqIdempotentAutoConfiguration {
         IdempotentConfig idempotentConfig = new IdempotentConfig();
         idempotentConfig.initConfig(properties);
         return idempotentConfig;
+    }
+
+    @Bean
+    public AlertStrategy alertStrategy(IdempotentConfig idempotentConfig) {
+        return AlertStrategyFactory.newInstance(idempotentConfig.getAlertName());
     }
 
     @Bean

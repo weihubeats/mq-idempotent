@@ -59,6 +59,11 @@ public class IdempotentConfig {
      */
     private TimeUnit timeOutTimeUnit = TimeUnit.DAYS;
 
+    /**
+     * 报警策略
+     */
+    private String alertName;
+
 
     public void initConfig(IdempotentProperties properties) {
         this.uniqueKey = properties.getUniqueKey();
