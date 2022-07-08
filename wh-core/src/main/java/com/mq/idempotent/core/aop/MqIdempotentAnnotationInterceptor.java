@@ -78,9 +78,7 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
 
     public Object proceed(MethodInvocation methodInvocation, String key) {
         try {
-            Object proceed = methodInvocation.proceed();
-            idempotentStrategy.save(key);
-            return proceed;
+            return methodInvocation.proceed();
         } catch (Throwable throwable) {
             // 监控
             alertStrategy.sendMsg("");
