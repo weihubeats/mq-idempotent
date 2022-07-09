@@ -15,7 +15,7 @@
         <maven.compiler.source>11</maven.compiler.source>
         <maven.compiler.target>11</maven.compiler.target>
         <lombok.version>1.18.4</lombok.version>
-        <redission.version>3.14.1</redission.version>
+        <redission.version>3.17.3</redission.version>
         <common.lang3>3.12.0</common.lang3>
         <mockito.version>3.5.15</mockito.version>
         <junit-jupiter.version>5.8.2</junit-jupiter.version>
