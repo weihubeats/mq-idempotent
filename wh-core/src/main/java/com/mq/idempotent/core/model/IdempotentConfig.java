@@ -40,6 +40,8 @@ public class IdempotentConfig {
      */
     private String uniqueValue;
 
+    private String recordKeySuffix;
+
     /**
      * 并发获取锁等待时间 TimeUnit.SECONDS
      */
@@ -70,6 +72,7 @@ public class IdempotentConfig {
         this.uniqueValue = properties.getUniqueValue();
         this.tryLockTime = properties.getTryLockTime();
         this.keyTimeOut = properties.getKeyTimeOut();
+        this.recordKeySuffix = properties.getRecordKeySuffix();
     }
 
 
