@@ -41,6 +41,11 @@ public class IdempotentProperties {
     private String uniqueKeyPrefix = "mq:unique:";
 
     /**
+     * 去重记录后缀
+     */
+    private String recordKeySuffix = "Record";
+
+    /**
      * redis值
      */
     private String uniqueValue = "s";
