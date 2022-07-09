@@ -17,6 +17,11 @@
 
 package com.mq.idempotent.core.aop;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
+import java.lang.reflect.Method;
+import java.util.Arrays;
+
 import com.mq.idempotent.core.alert.strategy.AlertStrategy;
 import com.mq.idempotent.core.annotation.Idempotent;
 import com.mq.idempotent.core.exception.MessageConcurrencyException;
@@ -25,8 +30,8 @@ import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
 
-import java.lang.reflect.Method;
-import java.util.Arrays;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.ObjectUtils;
 
 /**
  * @author : wh
@@ -40,11 +45,10 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
 
     private final AlertStrategy alertStrategy;
 
-    public MqIdempotentAnnotationInterceptor(AbstractIdempotentStrategy idempotentStrategy, AlertStrategy alertStrategy) {
+    public MqIdempotentAnnotationInterceptor(AbstractIdempotentStrategy idempotentStrategy, @Autowired(required = false) AlertStrategy alertStrategy) {
         this.idempotentStrategy = idempotentStrategy;
         this.alertStrategy = alertStrategy;
     }
-
 
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
@@ -83,11 +87,26 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
             return proceed;
         } catch (Throwable throwable) {
             // 监控
-            alertStrategy.sendMsg("");
+            //异常
+            String error = getStackTrace(throwable);
+            // 方法
+            Method method = methodInvocation.getMethod();
+            String methodName = method.getName();
+            if (!ObjectUtils.isEmpty(alertStrategy)) {
+                alertStrategy.sendMsg("");
+            }
             log.error("throwable ", throwable);
             throw new RuntimeException(throwable);
         } finally {
             idempotentStrategy.unlock(key);
+        }
+    }
+
+    public static String getStackTrace(Throwable throwable) {
+        StringWriter sw = new StringWriter();
+        try (PrintWriter pw = new PrintWriter(sw)) {
+            throwable.printStackTrace(pw);
+            return sw.toString();
         }
     }
 
