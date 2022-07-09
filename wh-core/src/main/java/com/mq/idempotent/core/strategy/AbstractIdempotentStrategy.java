@@ -17,12 +17,12 @@
 
 package com.mq.idempotent.core.strategy;
 
+import java.lang.reflect.Method;
+import java.util.concurrent.TimeUnit;
+
 import com.mq.idempotent.core.aop.MessageConverter;
 import com.mq.idempotent.core.model.IdempotentConfig;
 import lombok.AllArgsConstructor;
-
-import java.lang.reflect.Method;
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author : wh
@@ -34,7 +34,7 @@ public abstract class AbstractIdempotentStrategy implements IdempotentStrategy {
 
     private final IdempotentConfig idempotentConfig;
 
-    private final MessageConverter<Object> messageConverter;
+    private final MessageConverter messageConverter;
 
     public Long getTryLockTime() {
         return idempotentConfig.getTryLockTime();
