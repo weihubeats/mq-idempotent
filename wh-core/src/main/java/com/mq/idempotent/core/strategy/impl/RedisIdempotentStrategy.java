@@ -51,7 +51,7 @@ public class RedisIdempotentStrategy extends AbstractIdempotentStrategy {
 
     @Override
     public void save(String uniqueKey) {
-        String recordKey = uniqueKey + "_" + getIdempotentConfig().getRecordKeySuffix();
+        final String recordKey = getRecordKey(uniqueKey);
         RBucket<String> bucket = redissonClient.getBucket(recordKey);
         bucket.set(getUniqueValue(), getKeyTimeOut(), getTimeOutTimeUnit());
     }
@@ -64,7 +64,14 @@ public class RedisIdempotentStrategy extends AbstractIdempotentStrategy {
 
     @Override
     public boolean exitKey(String key) {
-        RBucket<String> stockLock = redissonClient.getBucket(key);
-        return stockLock.isExists();
+        final String recordKey = getRecordKey(key);
+        RBucket<String> record = redissonClient.getBucket(recordKey);
+        final RBucket<Object> currentLock = redissonClient.getBucket(key);
+
+        return record.isExists() || currentLock.isExists();
+    }
+
+    private String getRecordKey(String uniqueKey){
+        return uniqueKey + "_" + getIdempotentConfig().getRecordKeySuffix();
     }
 }
