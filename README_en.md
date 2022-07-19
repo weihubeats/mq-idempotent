@@ -30,12 +30,12 @@ Necessary condition
 <dependency>
   <groupId>io.github.weihubeats</groupId>
   <artifactId>wh-mq-rocketmq</artifactId>
-  <version>1.1.1-Release</version>
+  <version>1.1.2-Release</version>
 </dependency>
 ```
 - gradle
 ```xml
-implementation 'io.github.weihubeats:wh-mq-rocketmq:1.1.1-Release'
+implementation 'io.github.weihubeats:wh-mq-rocketmq:1.1.2-Release'
 ```
 
 ##### aliyun ons-client
@@ -43,7 +43,7 @@ implementation 'io.github.weihubeats:wh-mq-rocketmq:1.1.1-Release'
 <dependency>
 <groupId>io.github.weihubeats</groupId>
 <artifactId>wh-mq-aliyun-rocketmq</artifactId>
-<version>1.1.1-Release</version>
+<version>1.1.2-Release</version>
 </dependency>
 ```
 
@@ -99,7 +99,7 @@ Introduce dependencies
 <dependency>
 <groupId>io.github.weihubeats</groupId>
 <artifactId>wh-core</artifactId>
-<version>1.1.1-Release</version>
+<version>1.1.2-Release</version>
 </dependency>
 ```
 
@@ -142,7 +142,7 @@ The general idea of the current redis implementation is as follows
 - 1.0.4 : Support Alibaba Cloud RocketMQ Client
 - 1.0.5 : Added support for open source RocketMQ Client, and added automatic configuration `IdempotentConfig.java`
 - 1.0.6 : Optimize the problem of repeated consumption and repeated delivery, and optimize the code structure
-- 1.1.1-Release : Optimize the redis key expiration time
+- 1.1.2-Release : Optimize the redis key expiration time
 
 ## Future version
 

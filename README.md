@@ -33,12 +33,12 @@ General mq message idempotent deduplication framework, out of the box, supports 
 <dependency>
   <groupId>io.github.weihubeats</groupId>
   <artifactId>wh-mq-rocketmq</artifactId>
-  <version>1.1.1-Release</version>
+  <version>1.1.2-Release</version>
 </dependency>
 ```
 - gradle
 ```xml
-implementation 'io.github.weihubeats:wh-mq-rocketmq:1.1.1-Release'
+implementation 'io.github.weihubeats:wh-mq-rocketmq:1.1.2-Release'
 ```
 
 ##### aliyun ons-client
@@ -46,7 +46,7 @@ implementation 'io.github.weihubeats:wh-mq-rocketmq:1.1.1-Release'
 <dependency>
 <groupId>io.github.weihubeats</groupId>
 <artifactId>wh-mq-aliyun-rocketmq</artifactId>
-<version>1.1.1-Release</version>
+<version>1.1.2-Release</version>
 </dependency>
 ```
 
@@ -82,7 +82,7 @@ implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
 - 基于配置文件自动配置
 ```yaml
 idempotent:
-  redisKey: "mq::unique::"
+  redisKey: "mq:unique:"
   redisValue : "ss"
   tryLockTime: 2
   redisTimeOut: 3
@@ -111,7 +111,7 @@ idempotent:
 <dependency>
 <groupId>io.github.weihubeats</groupId>
 <artifactId>wh-core</artifactId>
-<version>1.1.1-Release</version>
+<version>1.1.2-Release</version>
 </dependency>
 ```
 
@@ -157,6 +157,7 @@ public class RocketMQMessageConverter implements MessageConverter<MessageExt> {
 - 1.1.9:添加对Spring Boot RabbitMQ支持
 - 1.1.0-Release:优化消息存储细节，自定义消息转换策略添加methdo、args 
 - 1.1.1-Release: 修复分布式锁异常问题
+- 1.1.2-Release: 修复分布式锁异常问题
 
 ## 未来版本
 1. 支持kafka
