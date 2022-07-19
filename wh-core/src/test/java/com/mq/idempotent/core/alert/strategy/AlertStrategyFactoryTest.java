@@ -1,6 +1,5 @@
 package com.mq.idempotent.core.alert.strategy;
 
-import com.mq.idempotent.core.spi.ExtensionLoader;
 import org.junit.jupiter.api.Test;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
@@ -14,8 +13,7 @@ public class AlertStrategyFactoryTest {
 
     @Test
     public void test() {
-        AlertStrategy lark = ExtensionLoader.getExtensionLoader(AlertStrategy.class).getJoin("lark");
-//        AlertStrategy lark = AlertStrategyFactory.newInstance("lark");
+        AlertStrategy lark = AlertStrategyFactory.newInstance("lark");
         assertTrue(lark instanceof LarkAlarmStrategy);
     }
     
