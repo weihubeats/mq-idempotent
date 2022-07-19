@@ -22,14 +22,5 @@ public class SpiExtensionFactory implements ExtensionFactory {
                 .map(ExtensionLoader::getDefaultJoin)
                 .orElse(null);
     }
-
-    public static void main(String[] args) {
-        ExtensionLoader<AlertStrategy> extensionLoader = ExtensionLoader.getExtensionLoader(AlertStrategy.class);
-        AlertStrategy lark = extensionLoader.getJoin("lark");
-        if (lark instanceof LarkAlarmStrategy) {
-            System.out.printf("haha");
-        }
-
-    }
 }
 

@@ -65,4 +65,9 @@ public class IdempotentProperties {
      */
     private Boolean concurrency = true;
 
+    /**
+     * 报警 url
+     */
+    private String webHook;
+
 }

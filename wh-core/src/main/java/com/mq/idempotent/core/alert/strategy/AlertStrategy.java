@@ -1,5 +1,6 @@
 package com.mq.idempotent.core.alert.strategy;
 
+import com.mq.idempotent.core.alert.AlertDTO;
 import com.mq.idempotent.core.spi.SPI;
 
 /**
@@ -10,6 +11,6 @@ import com.mq.idempotent.core.spi.SPI;
 @SPI
 public interface AlertStrategy {
 
-    boolean sendMsg(String text);
+    boolean sendMsg(AlertDTO alertDTO);
     
 }

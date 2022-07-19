@@ -1,8 +1,5 @@
 package com.mq.idempotent.core.spi;
 
-import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.StringUtils;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.URL;
@@ -16,6 +13,9 @@ import java.util.Objects;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.stream.Collectors;
+
+import lombok.extern.slf4j.Slf4j;
+import org.apache.commons.lang3.StringUtils;
 
 /**
  * @author : wh
@@ -207,7 +207,7 @@ public class ExtensionLoader<T> {
     }
 
     /**
-     * Load files under SHENYU_DIRECTORY.
+     * Load files under WH_DIRECTORY.
      */
     private void loadDirectory(final Map<String, Class<?>> classes) {
         String fileName = WH_DIRECTORY + clazz.getName();

@@ -1,1 +1,1 @@
-lark=com.mq.idempotent.core.alert.strategy.LarkAlarmStrategy
+lark = com.mq.idempotent.core.alert.strategy.LarkAlarmStrategy

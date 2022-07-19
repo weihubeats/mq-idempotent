@@ -17,10 +17,10 @@
 
 package com.mq.idempotent.core.model;
 
+import java.util.concurrent.TimeUnit;
+
 import com.mq.idempotent.core.config.IdempotentProperties;
 import lombok.Data;
-
-import java.util.concurrent.TimeUnit;
 
 /**
  * @author : wh
@@ -65,6 +65,9 @@ public class IdempotentConfig {
      * 报警策略
      */
     private String alertName;
+    
+    
+    private String webHook;
 
 
     public void initConfig(IdempotentProperties properties) {
@@ -73,6 +76,7 @@ public class IdempotentConfig {
         this.tryLockTime = properties.getTryLockTime();
         this.keyTimeOut = properties.getKeyTimeOut();
         this.recordKeySuffix = properties.getRecordKeySuffix();
+        this.webHook = properties.getWebHook();
     }
 
 
