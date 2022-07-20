@@ -27,14 +27,17 @@ import com.mq.idempotent.core.config.IdempotentProperties;
 import com.mq.idempotent.core.model.IdempotentConfig;
 import com.mq.idempotent.core.strategy.AbstractIdempotentStrategy;
 import com.mq.idempotent.core.strategy.impl.RedisIdempotentStrategy;
+import com.mq.idempotent.core.utils.TransactionUtil;
 import lombok.AllArgsConstructor;
 import org.redisson.api.RedissonClient;
+
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
 import org.springframework.boot.context.properties.EnableConfigurationProperties;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.transaction.PlatformTransactionManager;
 
 /**
  * @author : wh
@@ -50,8 +53,9 @@ public class MqIdempotentAutoConfiguration {
 
 
     @Bean
-    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(AbstractIdempotentStrategy idempotentStrategy, AlertStrategy alertStrategy) {
-        MqIdempotentAnnotationInterceptor advisor = new MqIdempotentAnnotationInterceptor(idempotentStrategy, alertStrategy);
+    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(AbstractIdempotentStrategy idempotentStrategy, AlertStrategy alertStrategy,
+            TransactionUtil transactionUtil) {
+        MqIdempotentAnnotationInterceptor advisor = new MqIdempotentAnnotationInterceptor(idempotentStrategy, alertStrategy, transactionUtil);
         return new MqIdempotentAnnotationAdvisor(advisor, Idempotent.class);
     }
 
@@ -80,6 +84,11 @@ public class MqIdempotentAutoConfiguration {
     @ConditionalOnClass(AbstractIdempotentStrategy.class)
     public AbstractIdempotentStrategy redisIdempotentStrategy(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter) {
         return new RedisIdempotentStrategy(idempotentConfig, messageConverter, redissonClient);
+    }
+    
+    @Bean
+    public TransactionUtil transactionUtil(PlatformTransactionManager transactionManager) {
+        return new TransactionUtil(transactionManager);
     }
 
 

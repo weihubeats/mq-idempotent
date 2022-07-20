@@ -19,12 +19,14 @@ package com.mq.idempotent.core.aop;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicReference;
 
 import com.mq.idempotent.core.alert.AlertDTO;
 import com.mq.idempotent.core.alert.strategy.AlertStrategy;
 import com.mq.idempotent.core.annotation.Idempotent;
 import com.mq.idempotent.core.exception.MessageConcurrencyException;
 import com.mq.idempotent.core.strategy.AbstractIdempotentStrategy;
+import com.mq.idempotent.core.utils.TransactionUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.aopalliance.intercept.MethodInterceptor;
 import org.aopalliance.intercept.MethodInvocation;
@@ -44,9 +46,12 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
 
 	private final AlertStrategy alertStrategy;
 
-	public MqIdempotentAnnotationInterceptor(AbstractIdempotentStrategy idempotentStrategy, @Autowired(required = false) AlertStrategy alertStrategy) {
+	private final TransactionUtil transactionUtil;
+
+	public MqIdempotentAnnotationInterceptor(AbstractIdempotentStrategy idempotentStrategy, @Autowired(required = false) AlertStrategy alertStrategy, TransactionUtil transactionUtil) {
 		this.idempotentStrategy = idempotentStrategy;
 		this.alertStrategy = alertStrategy;
+		this.transactionUtil = transactionUtil;
 	}
 
 	@Override
@@ -81,22 +86,25 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
 	}
 
 	public Object proceed(MethodInvocation methodInvocation, String key) {
-		try {
-			Object proceed = methodInvocation.proceed();
-			idempotentStrategy.save(key);
-			return proceed;
-		}
-		catch (Throwable throwable) {
-			// 监控
-			if (!ObjectUtils.isEmpty(alertStrategy)) {
-				alertStrategy.sendMsg(new AlertDTO(key, methodInvocation.getMethod(), throwable, idempotentStrategy.getWebHook()));
+		AtomicReference<Object> proceed = null;
+		transactionUtil.transact(() -> {
+			try {
+				proceed.set(methodInvocation.proceed());
+				idempotentStrategy.save(key);
 			}
-			log.error("throwable ", throwable);
-			throw new RuntimeException(throwable);
-		}
-		finally {
-			idempotentStrategy.unlock(key);
-		}
+			catch (Throwable throwable) {
+				// 监控
+				if (!ObjectUtils.isEmpty(alertStrategy)) {
+					alertStrategy.sendMsg(new AlertDTO(key, methodInvocation.getMethod(), throwable, idempotentStrategy.getWebHook()));
+				}
+				log.error("throwable ", throwable);
+				throw new RuntimeException(throwable);
+			}
+			finally {
+				idempotentStrategy.unlock(key);
+			}
+		});
+		return proceed;
 	}
 
 }

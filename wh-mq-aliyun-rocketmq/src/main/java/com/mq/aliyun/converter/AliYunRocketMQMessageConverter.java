@@ -1,10 +1,11 @@
 package com.mq.aliyun.converter;
 
+import java.lang.reflect.Method;
+
 import com.aliyun.openservices.ons.api.Message;
 import com.mq.idempotent.core.aop.MessageConverter;
-import org.springframework.util.StringUtils;
 
-import java.lang.reflect.Method;
+import org.springframework.util.ObjectUtils;
 
 /**
  * @author : wh
@@ -17,6 +18,6 @@ public class AliYunRocketMQMessageConverter implements MessageConverter<Message>
     @Override
     public String getUniqueKey(Message message, String field, Method method, Object[] args) {
         String messageKey = message.getKey();
-        return !StringUtils.isEmpty(messageKey) ? messageKey : message.getMsgID();
+        return !ObjectUtils.isEmpty(messageKey) ? messageKey : message.getMsgID();
     }
 }
