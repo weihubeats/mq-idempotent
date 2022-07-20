@@ -1,22 +1,18 @@
 package com.samples.config;
 
-import com.aliyun.openservices.ons.api.*;
-import com.aliyun.openservices.ons.api.impl.authority.SessionCredentials;
-import com.aliyun.openservices.ons.api.impl.rocketmq.OnsClientRPCHook;
-import com.aliyun.openservices.shade.com.alibaba.rocketmq.client.producer.DefaultMQProducer;
-import com.mq.idempotent.core.annotation.Idempotent;
+import java.util.Properties;
+
+import com.aliyun.openservices.ons.api.Action;
+import com.aliyun.openservices.ons.api.Consumer;
+import com.aliyun.openservices.ons.api.ONSFactory;
+import com.aliyun.openservices.ons.api.PropertyKeyConst;
+import com.samples.consumer.MessageEventHandler;
 import lombok.extern.slf4j.Slf4j;
-import com.aliyun.openservices.ons.api.Message;
 
-
-import org.redisson.api.RedissonClient;
-import org.springframework.aop.framework.AopContext;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
-
-import java.util.Properties;
 
 /**
  * @author : wh
@@ -48,13 +44,13 @@ public class AliyunMQConfig {
     @Bean(initMethod = "start", destroyMethod = "shutdown")
     public Consumer consumer() {
         Properties properties = new Properties();
-        properties.put(PropertyKeyConst.AccessKey, "aliMQAccessKey");
-        properties.put(PropertyKeyConst.SecretKey, "aliMQSecretKey");
-        properties.put(PropertyKeyConst.NAMESRV_ADDR, orderNameSerAddr);
+        properties.put(PropertyKeyConst.AccessKey, "");
+        properties.put(PropertyKeyConst.SecretKey, "");
+        properties.put(PropertyKeyConst.NAMESRV_ADDR, "");
         properties.put(PropertyKeyConst.MaxReconsumeTimes, 20);
-        properties.put(PropertyKeyConst.GROUP_ID, "orderServiceGid");
+        properties.put(PropertyKeyConst.GROUP_ID, "");
         Consumer consumer = ONSFactory.createConsumer(properties);
-        consumer.subscribe("orderTopic", "test || test_event", (message, context) ->
+        consumer.subscribe("topic", "*", (message, context) ->
                 handler.consumer(message)
                         ? Action.CommitMessage
                         : Action.ReconsumeLater);

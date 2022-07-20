@@ -1,5 +1,7 @@
 package com.mq.idempotent.core.utils;
 
+import java.util.function.Supplier;
+
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 
@@ -35,8 +37,33 @@ public class TransactionUtil {
 
 	}
 
+	public <T> T transact(Supplier<T> supplier, TransactionDefinition transactionDefinition) {
+		TransactionStatus status = transactionManager.getTransaction(transactionDefinition);
+		try {
+			T t = supplier.get();
+			transactionManager.commit(status);
+			return t;
+		}
+		catch (Exception e) {
+			transactionManager.rollback(status);
+			log.error("transact error", e);
+			return null;
+		}
+
+	}
+
+	/**
+	 *  默认创博行为 PROPAGATION_REQUIRED
+	 * @param runnable
+	 * @return
+	 */
 	public boolean transact(Runnable runnable) {
 		return transact(runnable, new DefaultTransactionDefinition());
+	}
+
+	public <T> T transact(Supplier<T> supplier) {
+		return transact(supplier, new DefaultTransactionDefinition());
+		
 	}
 
 }

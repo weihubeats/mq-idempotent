@@ -19,7 +19,6 @@ package com.mq.idempotent.core.aop;
 
 import java.lang.reflect.Method;
 import java.util.Arrays;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.mq.idempotent.core.alert.AlertDTO;
 import com.mq.idempotent.core.alert.strategy.AlertStrategy;
@@ -82,29 +81,29 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
 			// 抛出异常依赖mq自动重试
 			throw new MessageConcurrencyException("有消息正在消费");
 		}
+		if (annotation.transactional()) {
+			return transactionUtil.transact(() -> proceed(methodInvocation, key));
+		}
 		return proceed(methodInvocation, key);
 	}
 
 	public Object proceed(MethodInvocation methodInvocation, String key) {
-		AtomicReference<Object> proceed = null;
-		transactionUtil.transact(() -> {
-			try {
-				proceed.set(methodInvocation.proceed());
-				idempotentStrategy.save(key);
+		try {
+			Object proceed = methodInvocation.proceed();
+			idempotentStrategy.save(key);
+			return proceed;
+		}
+		catch (Throwable throwable) {
+			// 监控
+			if (!ObjectUtils.isEmpty(alertStrategy)) {
+				alertStrategy.sendMsg(new AlertDTO(key, methodInvocation.getMethod(), throwable, idempotentStrategy.getWebHook()));
 			}
-			catch (Throwable throwable) {
-				// 监控
-				if (!ObjectUtils.isEmpty(alertStrategy)) {
-					alertStrategy.sendMsg(new AlertDTO(key, methodInvocation.getMethod(), throwable, idempotentStrategy.getWebHook()));
-				}
-				log.error("throwable ", throwable);
-				throw new RuntimeException(throwable);
-			}
-			finally {
-				idempotentStrategy.unlock(key);
-			}
-		});
-		return proceed;
+			log.error("throwable ", throwable);
+			throw new RuntimeException(throwable);
+		}
+		finally {
+			idempotentStrategy.unlock(key);
+		}
 	}
 
 }

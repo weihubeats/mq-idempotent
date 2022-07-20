@@ -19,7 +19,25 @@
     </modules>
     <properties>
         <maven.deploy.skip>true</maven.deploy.skip>
+        <mybatis-plus-boot-starter.version>3.5.2</mybatis-plus-boot-starter.version>
+        <org.postgresql.version>42.3.3</org.postgresql.version>
+
     </properties>
+    
+    <dependencies>
+
+        <dependency>
+            <groupId>org.postgresql</groupId>
+            <artifactId>postgresql</artifactId>
+            <version>${org.postgresql.version}</version>
+        </dependency>
+        <dependency>
+            <groupId>com.baomidou</groupId>
+            <artifactId>mybatis-plus-boot-starter</artifactId>
+            <version>${mybatis-plus-boot-starter.version}</version>
+        </dependency>
+        
+    </dependencies>
 
 
 </project>

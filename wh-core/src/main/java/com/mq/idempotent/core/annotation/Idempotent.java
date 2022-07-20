@@ -35,5 +35,16 @@ public @interface Idempotent {
      */
     String field() default "msgId";
 
+    /**
+     * 是否开启并发锁控制
+     * @return
+     */
     boolean lock() default true;
+
+    /**
+     * 是否开启事务
+     * @return
+     */
+    boolean transactional() default false;
+    
 }

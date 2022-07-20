@@ -70,4 +70,9 @@ public class IdempotentProperties {
      */
     private String webHook;
 
+    /**
+     * 报警策略
+     */
+    private String alertName;
+
 }

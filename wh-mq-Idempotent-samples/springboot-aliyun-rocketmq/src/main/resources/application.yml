@@ -1,6 +1,13 @@
 spring:
   application:
-    name: plutus
+    name: idempotent
   profiles:
     active: dev
+
+db:
+  pg:
+    connectionTestQuery: select 1
+    jdbcUrl: 127.0.0.1:1921/plutus
+    password: test
+    username: 123456
 

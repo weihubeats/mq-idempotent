@@ -31,6 +31,7 @@ import com.mq.idempotent.core.utils.TransactionUtil;
 import lombok.AllArgsConstructor;
 import org.redisson.api.RedissonClient;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnClass;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnMissingBean;
 import org.springframework.boot.autoconfigure.condition.ConditionalOnProperty;
@@ -53,7 +54,7 @@ public class MqIdempotentAutoConfiguration {
 
 
     @Bean
-    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(AbstractIdempotentStrategy idempotentStrategy, AlertStrategy alertStrategy,
+    public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(AbstractIdempotentStrategy idempotentStrategy, @Autowired(required = false) AlertStrategy alertStrategy,
             TransactionUtil transactionUtil) {
         MqIdempotentAnnotationInterceptor advisor = new MqIdempotentAnnotationInterceptor(idempotentStrategy, alertStrategy, transactionUtil);
         return new MqIdempotentAnnotationAdvisor(advisor, Idempotent.class);
@@ -69,6 +70,7 @@ public class MqIdempotentAutoConfiguration {
     }
 
     @Bean
+    @ConditionalOnProperty(prefix = IdempotentProperties.PREFIX + "." , value = "alertName", havingValue = "lark")
     public AlertStrategy alertStrategy(IdempotentConfig idempotentConfig) {
         return AlertStrategyFactory.newInstance(idempotentConfig.getAlertName());
     }
