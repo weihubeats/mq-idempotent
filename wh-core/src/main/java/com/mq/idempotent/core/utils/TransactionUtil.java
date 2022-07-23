@@ -29,10 +29,8 @@ public class TransactionUtil {
 			transactionManager.commit(status);
 			return true;
 		}
-		catch (Exception e) {
+		finally {
 			transactionManager.rollback(status);
-			log.error("transact error", e);
-			return false;
 		}
 
 	}
@@ -44,10 +42,8 @@ public class TransactionUtil {
 			transactionManager.commit(status);
 			return t;
 		}
-		catch (Exception e) {
+		finally {
 			transactionManager.rollback(status);
-			log.error("transact error", e);
-			return null;
 		}
 
 	}
@@ -63,7 +59,7 @@ public class TransactionUtil {
 
 	public <T> T transact(Supplier<T> supplier) {
 		return transact(supplier, new DefaultTransactionDefinition());
-		
+
 	}
 
 }
