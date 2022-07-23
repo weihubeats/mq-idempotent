@@ -29,8 +29,9 @@ public class TransactionUtil {
 			transactionManager.commit(status);
 			return true;
 		}
-		finally {
+		catch (Exception e) {
 			transactionManager.rollback(status);
+			throw e;
 		}
 
 	}
@@ -42,8 +43,9 @@ public class TransactionUtil {
 			transactionManager.commit(status);
 			return t;
 		}
-		finally {
+		catch (Exception e) {
 			transactionManager.rollback(status);
+			throw e;
 		}
 
 	}
