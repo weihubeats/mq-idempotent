@@ -7,7 +7,7 @@
 	<groupId>io.github.weihubeats</groupId>
 	<artifactId>wh-mq-Idempotent</artifactId>
 	<packaging>pom</packaging>
-	<version>1.1.4-Release</version>
+	<version>${revision}</version>
 
 	<name>mq-Idempotent</name>
 	<description>mq-Idempotent</description>
@@ -36,6 +36,7 @@
 		<mockito.version>3.5.15</mockito.version>
 		<junit-jupiter.version>5.8.2</junit-jupiter.version>
 		<okhttp.version>3.7.0</okhttp.version>
+		<revision>1.1.4-Release</revision>
 	</properties>
 
 	<dependencyManagement>
@@ -198,6 +199,31 @@
 						<phase>verify</phase>
 						<goals>
 							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>1.2.7</version>
+				<configuration>
+					<updatePomFile>true</updatePomFile>
+					<flattenMode>resolveCiFriendliesOnly</flattenMode>
+				</configuration>
+				<executions>
+					<execution>
+						<id>flatten</id>
+						<phase>process-resources</phase>
+						<goals>
+							<goal>flatten</goal>
+						</goals>
+					</execution>
+					<execution>
+						<id>flatten.clean</id>
+						<phase>clean</phase>
+						<goals>
+							<goal>clean</goal>
 						</goals>
 					</execution>
 				</executions>
