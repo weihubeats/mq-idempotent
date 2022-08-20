@@ -5,99 +5,41 @@
 	<modelVersion>4.0.0</modelVersion>
 
 	<groupId>io.github.weihubeats</groupId>
-	<artifactId>wh-mq-Idempotent</artifactId>
+	<artifactId>mq-idempotent</artifactId>
 	<packaging>pom</packaging>
 	<version>${revision}</version>
 
-	<name>mq-Idempotent</name>
+	<name>mq-idempotent</name>
 	<description>mq-Idempotent</description>
-	<url>https://github.com/weihubeats/wh-mq-Idempotent</url>
+	<url>https://github.com/weihubeats/mq-idempotent</url>
 
 
 	<modules>
-		<module>wh-core</module>
-		<module>wh-mq-Idempotent-samples</module>
-		<module>wh-mq-aliyun-rocketmq</module>
-		<module>wh-mq-rocketmq</module>
-		<module>wh-mq-boot-rabbitmq</module>
+		<module>mq-Idempotent-core</module>
+		<module>mq-idempotent-samples</module>
+		<module>mq-idempotent-spring-boot-starter</module>
+		<module>mq-idempotent-spring-boot-starter</module>
+		<module>mq-idempotent-dependencies</module>
 	</modules>
 
-
 	<properties>
-		<maven.compiler.source>8</maven.compiler.source>
-		<maven.compiler.target>8</maven.compiler.target>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-		<java.version>1.8</java.version>
-		<spring-boot.version>2.6.8</spring-boot.version>
-		<project.version>1.0</project.version>
-		<lombok.version>1.18.4</lombok.version>
-		<redission.version>3.17.3</redission.version>
-		<common.lang3>3.12.0</common.lang3>
-		<mockito.version>3.5.15</mockito.version>
-		<junit-jupiter.version>5.8.2</junit-jupiter.version>
-		<okhttp.version>3.7.0</okhttp.version>
 		<revision>1.1.4-Release</revision>
+		<flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
 	</properties>
-
+	
 	<dependencyManagement>
 		<dependencies>
 			<dependency>
-				<groupId>org.springframework.boot</groupId>
-				<artifactId>spring-boot-dependencies</artifactId>
-				<version>${spring-boot.version}</version>
+				<groupId>io.github.weihubeats</groupId>
+				<artifactId>mq-idempotent-dependencies</artifactId>
+				<version>${revision}</version>
 				<type>pom</type>
 				<scope>import</scope>
 			</dependency>
-
-			<dependency>
-				<groupId>org.projectlombok</groupId>
-				<artifactId>lombok</artifactId>
-				<version>${lombok.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.redisson</groupId>
-				<artifactId>redisson</artifactId>
-				<version>${redission.version}</version>
-			</dependency>
-			<dependency>
-				<groupId>org.apache.commons</groupId>
-				<artifactId>commons-lang3</artifactId>
-				<version>${common.lang3}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>com.squareup.okhttp3</groupId>
-				<artifactId>okhttp</artifactId>
-				<version>${okhttp.version}</version>
-			</dependency>
-
-			<dependency>
-				<groupId>org.junit.jupiter</groupId>
-				<artifactId>junit-jupiter</artifactId>
-				<version>${junit-jupiter.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-junit-jupiter</artifactId>
-				<version>${mockito.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-core</artifactId>
-				<version>${mockito.version}</version>
-				<scope>test</scope>
-			</dependency>
-			<dependency>
-				<groupId>org.mockito</groupId>
-				<artifactId>mockito-inline</artifactId>
-				<version>${mockito.version}</version>
-				<scope>test</scope>
-			</dependency>
-
 		</dependencies>
 	</dependencyManagement>
+
+	
 
 	<licenses>
 		<license>
@@ -117,13 +59,13 @@
 
 	<scm>
 		<connection>scm:git@github.com:weihubeats/wh-mq-Idempotent.git</connection>
-		<developerConnection>scm:git@github.com:weihubeats/wh-mq-Idempotent.git</developerConnection>
-		<url>git@github.com:weihubeats/wh-mq-Idempotent.git</url>
+		<developerConnection>scm:git@github.com:weihubeats/mq-idempotent.git</developerConnection>
+		<url>git@github.com:weihubeats/mq-idempotent.git</url>
 	</scm>
 
 	<issueManagement>
 		<system>Github Issue</system>
-		<url>https://github.com/weihubeats/wh-mq-Idempotent/issues</url>
+		<url>https://github.com/weihubeats/mq-idempotent/issues</url>
 	</issueManagement>
 
 
@@ -203,10 +145,20 @@
 					</execution>
 				</executions>
 			</plugin>
+
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>flatten-maven-plugin</artifactId>
-				<version>1.2.7</version>
+				<configuration>
+					<updatePomFile>true</updatePomFile>
+					<flattenMode>resolveCiFriendliesOnly</flattenMode>
+				</configuration>
+			</plugin>
+
+			<plugin>
+				<groupId>org.codehaus.mojo</groupId>
+				<artifactId>flatten-maven-plugin</artifactId>
+				<version>${flatten-maven-plugin.version}</version>
 				<configuration>
 					<updatePomFile>true</updatePomFile>
 					<flattenMode>resolveCiFriendliesOnly</flattenMode>
@@ -228,6 +180,32 @@
 					</execution>
 				</executions>
 			</plugin>
+			
+<!--			<plugin>-->
+<!--				<groupId>org.codehaus.mojo</groupId>-->
+<!--				<artifactId>flatten-maven-plugin</artifactId>-->
+<!--				<version>1.2.7</version>-->
+<!--				<configuration>-->
+<!--					<updatePomFile>true</updatePomFile>-->
+<!--					<flattenMode>resolveCiFriendliesOnly</flattenMode>-->
+<!--				</configuration>-->
+<!--				<executions>-->
+<!--					<execution>-->
+<!--						<id>flatten</id>-->
+<!--						<phase>process-resources</phase>-->
+<!--						<goals>-->
+<!--							<goal>flatten</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--					<execution>-->
+<!--						<id>flatten.clean</id>-->
+<!--						<phase>clean</phase>-->
+<!--						<goals>-->
+<!--							<goal>clean</goal>-->
+<!--						</goals>-->
+<!--					</execution>-->
+<!--				</executions>-->
+<!--			</plugin>-->
 		</plugins>
 	</build>
 

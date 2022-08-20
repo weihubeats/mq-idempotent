@@ -1,0 +1,2 @@
+org.springframework.boot.autoconfigure.EnableAutoConfiguration=\
+  com.mq.idempotent.aliyun.rocketmq.converter.AliYunRocketMQMessageConverter
