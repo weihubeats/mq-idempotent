@@ -1,6 +1,6 @@
 ![img.png](static/img/logo.png)
 
-## wh-mq-Idempotent
+## mq-Idempotent
 
 通用的mq消息幂等去重框架，开箱即用,支持主流所有mq</br>
 General mq message idempotent deduplication framework, out of the box, supports all mainstream mq
