@@ -23,7 +23,7 @@
 	</modules>
 
 	<properties>
-		<revision>1.1.4-Release</revision>
+		<revision>1.1.5</revision>
 		<flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
 	</properties>
 	
@@ -149,15 +149,6 @@
 			<plugin>
 				<groupId>org.codehaus.mojo</groupId>
 				<artifactId>flatten-maven-plugin</artifactId>
-				<configuration>
-					<updatePomFile>true</updatePomFile>
-					<flattenMode>resolveCiFriendliesOnly</flattenMode>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.codehaus.mojo</groupId>
-				<artifactId>flatten-maven-plugin</artifactId>
 				<version>${flatten-maven-plugin.version}</version>
 				<configuration>
 					<updatePomFile>true</updatePomFile>
@@ -180,32 +171,6 @@
 					</execution>
 				</executions>
 			</plugin>
-			
-<!--			<plugin>-->
-<!--				<groupId>org.codehaus.mojo</groupId>-->
-<!--				<artifactId>flatten-maven-plugin</artifactId>-->
-<!--				<version>1.2.7</version>-->
-<!--				<configuration>-->
-<!--					<updatePomFile>true</updatePomFile>-->
-<!--					<flattenMode>resolveCiFriendliesOnly</flattenMode>-->
-<!--				</configuration>-->
-<!--				<executions>-->
-<!--					<execution>-->
-<!--						<id>flatten</id>-->
-<!--						<phase>process-resources</phase>-->
-<!--						<goals>-->
-<!--							<goal>flatten</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--					<execution>-->
-<!--						<id>flatten.clean</id>-->
-<!--						<phase>clean</phase>-->
-<!--						<goals>-->
-<!--							<goal>clean</goal>-->
-<!--						</goals>-->
-<!--					</execution>-->
-<!--				</executions>-->
-<!--			</plugin>-->
 		</plugins>
 	</build>
 
