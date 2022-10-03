@@ -18,7 +18,6 @@
 		<module>mq-Idempotent-core</module>
 		<module>mq-idempotent-samples</module>
 		<module>mq-idempotent-spring-boot-starter</module>
-		<module>mq-idempotent-spring-boot-starter</module>
 		<module>mq-idempotent-dependencies</module>
 	</modules>
 
