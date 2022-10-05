@@ -44,72 +44,73 @@ import java.lang.reflect.Proxy;
  * @description:
  */
 public class MqIdempotentAnnotationAdvisor extends AbstractPointcutAdvisor implements BeanFactoryAware {
-
+    
     private final Advice advice;
-
+    
     private final Pointcut pointcut;
-
+    
     private final Class<? extends Annotation> annotation;
-
+    
     public MqIdempotentAnnotationAdvisor(@NonNull MethodInterceptor advice,
                                          @NonNull Class<? extends Annotation> annotation) {
         this.advice = advice;
         this.annotation = annotation;
         this.pointcut = buildPointcut();
     }
-
+    
     @Override
     public Pointcut getPointcut() {
         return this.pointcut;
     }
-
+    
     @Override
     public Advice getAdvice() {
         return this.advice;
     }
-
+    
     @Override
     public void setBeanFactory(BeanFactory beanFactory) throws BeansException {
         if (this.advice instanceof BeanFactoryAware) {
             ((BeanFactoryAware) this.advice).setBeanFactory(beanFactory);
         }
     }
-
+    
     private Pointcut buildPointcut() {
         Pointcut cpc = new AnnotationMatchingPointcut(annotation, true);
         Pointcut mpc = new AnnotationMethodPoint(annotation);
         return new ComposablePointcut(cpc).union(mpc);
     }
-
+    
     /**
      * In order to be compatible with the spring lower than 5.0
      */
     private static class AnnotationMethodPoint implements Pointcut {
-
+        
         private final Class<? extends Annotation> annotationType;
-
+        
         public AnnotationMethodPoint(Class<? extends Annotation> annotationType) {
             Assert.notNull(annotationType, "Annotation type must not be null");
             this.annotationType = annotationType;
         }
-
+        
         @Override
         public ClassFilter getClassFilter() {
             return ClassFilter.TRUE;
         }
-
+        
         @Override
         public MethodMatcher getMethodMatcher() {
             return new AnnotationMethodMatcher(annotationType);
         }
-
+        
         private static class AnnotationMethodMatcher extends StaticMethodMatcher {
+            
             private final Class<? extends Annotation> annotationType;
-
+            
             public AnnotationMethodMatcher(Class<? extends Annotation> annotationType) {
                 this.annotationType = annotationType;
             }
-
+            
             @Override
             public boolean matches(Method method, Class<?> targetClass) {
                 if (matchesMethod(method)) {
@@ -123,7 +124,7 @@ public class MqIdempotentAnnotationAdvisor extends AbstractPointcutAdvisor imple
                 Method specificMethod = AopUtils.getMostSpecificMethod(method, targetClass);
                 return (specificMethod != method && matchesMethod(specificMethod));
             }
-
+            
             private boolean matchesMethod(Method method) {
                 return AnnotatedElementUtils.hasAnnotation(method, this.annotationType);
             }

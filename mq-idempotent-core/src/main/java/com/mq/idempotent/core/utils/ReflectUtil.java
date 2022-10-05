@@ -29,13 +29,12 @@ import java.lang.reflect.Field;
  * @description:
  */
 public class ReflectUtil {
-
+    
     /**
      * 字段缓存
      */
     private static final SimpleCache<Class<?>, Field[]> FIELDS_CACHE = new SimpleCache<>();
-
-
+    
     /**
      * 获取字段值
      *
@@ -50,7 +49,7 @@ public class ReflectUtil {
         }
         return getFieldValue(obj, getField(obj instanceof Class ? (Class<?>) obj : obj.getClass(), fieldName));
     }
-
+    
     /**
      * 获取字段值
      *
@@ -66,13 +65,13 @@ public class ReflectUtil {
             // 静态字段获取时对象为null
             obj = null;
         }
-
+        
         setAccessible(field);
         Object result;
         result = field.get(obj);
         return result;
     }
-
+    
     /**
      * 设置方法为可访问（私有方法可以被外部调用）
      *
@@ -86,7 +85,7 @@ public class ReflectUtil {
         }
         return accessibleObject;
     }
-
+    
     /**
      * 查找指定类中的指定name的字段（包括非public字段），也包括父类和Object类的字段， 字段不存在则返回{@code null}
      *
@@ -99,7 +98,7 @@ public class ReflectUtil {
         final Field[] fields = getFields(beanClass);
         return ArrayUtil.firstMatch((field) -> name.equals(getFieldName(field)), fields);
     }
-
+    
     /**
      * 获取字段名
      *
@@ -112,7 +111,7 @@ public class ReflectUtil {
         }
         return field.getName();
     }
-
+    
     /**
      * 获得一个类中所有字段列表，包括其父类中的字段<br>
      * 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
@@ -125,7 +124,7 @@ public class ReflectUtil {
         Assert.notNull(beanClass);
         return FIELDS_CACHE.get(beanClass, () -> getFieldsDirectly(beanClass, true));
     }
-
+    
     /**
      * 获得一个类中所有字段列表，直接反射获取，无缓存<br>
      * 如果子类与父类中存在同名字段，则这两个字段同时存在，子类字段在前，父类字段在后。
@@ -137,7 +136,7 @@ public class ReflectUtil {
      */
     public static Field[] getFieldsDirectly(Class<?> beanClass, boolean withSuperClassFields) throws SecurityException {
         Assert.notNull(beanClass);
-
+        
         Field[] allFields = null;
         Class<?> searchType = beanClass;
         Field[] declaredFields;
@@ -150,9 +149,8 @@ public class ReflectUtil {
             }
             searchType = withSuperClassFields ? searchType.getSuperclass() : null;
         }
-
+        
         return allFields;
     }
-
-
+    
 }

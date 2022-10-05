@@ -30,14 +30,14 @@ import org.redisson.api.RedissonClient;
  * @description:
  */
 public class RedisIdempotentStrategy extends AbstractIdempotentStrategy {
-
+    
     private final RedissonClient redissonClient;
-
+    
     public RedisIdempotentStrategy(IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter, RedissonClient redissonClient) {
         super(idempotentConfig, messageConverter);
         this.redissonClient = redissonClient;
     }
-
+    
     @Override
     public boolean lock(String lockName) {
         RLock stockLock = redissonClient.getLock(lockName);
@@ -48,30 +48,30 @@ public class RedisIdempotentStrategy extends AbstractIdempotentStrategy {
         }
         return false;
     }
-
+    
     @Override
     public void save(String uniqueKey) {
         final String recordKey = getRecordKey(uniqueKey);
         RBucket<String> bucket = redissonClient.getBucket(recordKey);
         bucket.set(getUniqueValue(), getKeyTimeOut(), getTimeOutTimeUnit());
     }
-
+    
     @Override
     public void unlock(String lockName) {
         RLock stockLock = redissonClient.getLock(lockName);
         stockLock.unlock();
     }
-
+    
     @Override
     public boolean exitKey(String key) {
         final String recordKey = getRecordKey(key);
         RBucket<String> record = redissonClient.getBucket(recordKey);
         final RBucket<Object> currentLock = redissonClient.getBucket(key);
-
+        
         return record.isExists() || currentLock.isExists();
     }
-
-    private String getRecordKey(String uniqueKey){
+    
+    private String getRecordKey(String uniqueKey) {
         return uniqueKey + "_" + getIdempotentConfig().getRecordKeySuffix();
     }
 }

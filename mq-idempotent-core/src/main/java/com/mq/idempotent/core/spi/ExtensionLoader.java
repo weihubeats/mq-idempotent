@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.mq.idempotent.core.spi;
 
 import java.io.IOException;
@@ -25,23 +42,23 @@ import org.apache.commons.lang3.StringUtils;
  */
 @Slf4j
 public class ExtensionLoader<T> {
-
+    
     private static final String WH_DIRECTORY = "META-INF/wh/";
-
+    
     private static final Map<Class<?>, ExtensionLoader<?>> LOADERS = new ConcurrentHashMap<>();
-
+    
     private final Class<T> clazz;
-
+    
     private final ClassLoader classLoader;
-
+    
     private final Holder<Map<String, Class<?>>> cachedClasses = new Holder<>();
-
+    
     private final Map<String, Holder<Object>> cachedInstances = new ConcurrentHashMap<>();
-
+    
     private final Map<Class<?>, Object> joinInstances = new ConcurrentHashMap<>();
-
+    
     private String cachedDefaultName;
-
+    
     /**
      * Instantiates a new Extension loader.
      *
@@ -54,7 +71,7 @@ public class ExtensionLoader<T> {
             ExtensionLoader.getExtensionLoader(ExtensionFactory.class).getExtensionClasses();
         }
     }
-
+    
     /**
      * Gets extension loader.
      *
@@ -64,9 +81,9 @@ public class ExtensionLoader<T> {
      * @return the extension loader.
      */
     public static <T> ExtensionLoader<T> getExtensionLoader(final Class<T> clazz, final ClassLoader cl) {
-
+        
         Objects.requireNonNull(clazz, "extension clazz is null");
-
+        
         if (!clazz.isInterface()) {
             throw new IllegalArgumentException("extension clazz (" + clazz + ") is not interface!");
         }
@@ -80,7 +97,7 @@ public class ExtensionLoader<T> {
         LOADERS.putIfAbsent(clazz, new ExtensionLoader<>(clazz, cl));
         return (ExtensionLoader<T>) LOADERS.get(clazz);
     }
-
+    
     /**
      * Gets extension loader.
      *
@@ -91,7 +108,7 @@ public class ExtensionLoader<T> {
     public static <T> ExtensionLoader<T> getExtensionLoader(final Class<T> clazz) {
         return getExtensionLoader(clazz, ExtensionLoader.class.getClassLoader());
     }
-
+    
     /**
      * Gets default join.
      *
@@ -104,7 +121,7 @@ public class ExtensionLoader<T> {
         }
         return getJoin(cachedDefaultName);
     }
-
+    
     /**
      * Gets join.
      *
@@ -132,7 +149,7 @@ public class ExtensionLoader<T> {
         }
         return (T) value;
     }
-
+    
     /**
      * get all join spi.
      *
@@ -153,7 +170,7 @@ public class ExtensionLoader<T> {
         });
         return joins;
     }
-
+    
     @SuppressWarnings("unchecked")
     private T createExtension(final String name) {
         Class<?> aClass = getExtensionClasses().get(name);
@@ -168,12 +185,12 @@ public class ExtensionLoader<T> {
             } catch (InstantiationException | IllegalAccessException e) {
                 throw new IllegalStateException("Extension instance(name: " + name + ", class: "
                         + aClass + ")  could not be instantiated: " + e.getMessage(), e);
-
+                
             }
         }
         return (T) o;
     }
-
+    
     /**
      * Gets extension classes.
      *
@@ -192,7 +209,7 @@ public class ExtensionLoader<T> {
         }
         return classes;
     }
-
+    
     private Map<String, Class<?>> loadExtensionClass() {
         SPI annotation = clazz.getAnnotation(SPI.class);
         if (Objects.nonNull(annotation)) {
@@ -205,7 +222,7 @@ public class ExtensionLoader<T> {
         loadDirectory(classes);
         return classes;
     }
-
+    
     /**
      * Load files under WH_DIRECTORY.
      */
@@ -224,7 +241,7 @@ public class ExtensionLoader<T> {
             log.error("load extension class error {}", fileName, t);
         }
     }
-
+    
     private void loadResources(final Map<String, Class<?>> classes, final URL url) throws IOException {
         try (InputStream inputStream = url.openStream()) {
             Properties properties = new Properties();
@@ -244,7 +261,7 @@ public class ExtensionLoader<T> {
             throw new IllegalStateException("load extension resources error", e);
         }
     }
-
+    
     private void loadClass(final Map<String, Class<?>> classes,
                            final String name, final String classPath) throws ClassNotFoundException {
         Class<?> subClass = Objects.nonNull(this.classLoader) ? Class.forName(classPath, true, this.classLoader) : Class.forName(classPath);
@@ -261,16 +278,16 @@ public class ExtensionLoader<T> {
             throw new IllegalStateException("load extension resources error,Duplicate class " + clazz.getName() + " name " + name + " on " + oldClass.getName() + " or " + subClass.getName());
         }
     }
-
+    
     /**
      * The type Holder.
      *
      * @param <T> the type parameter.
      */
     public static class Holder<T> {
-
+        
         private volatile T value;
-
+        
         /**
          * Gets value.
          *
@@ -279,7 +296,7 @@ public class ExtensionLoader<T> {
         public T getValue() {
             return value;
         }
-
+        
         /**
          * Sets value.
          *

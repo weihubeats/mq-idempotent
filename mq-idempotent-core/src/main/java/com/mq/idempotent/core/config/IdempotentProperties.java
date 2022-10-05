@@ -30,49 +30,47 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 @Setter
 @ConfigurationProperties(prefix = IdempotentProperties.PREFIX)
 public class IdempotentProperties {
-
-
+    
     public static final String PREFIX = "idempotent";
-
-
+    
     /**
      * 去重key redis名字
      */
     private String uniqueKeyPrefix = "mq:unique:";
-
+    
     /**
      * 去重记录后缀
      */
     private String recordKeySuffix = "Record";
-
+    
     /**
      * redis值
      */
     private String uniqueValue = "s";
-
+    
     /**
      * 并发获取锁等待时间
      */
     private Long tryLockTime = 1L;
-
+    
     /**
      * 消费key存放时间默认3天
      */
     private Long keyTimeOut = 3L;
-
+    
     /**
      * 是否开启并发控制
      */
     private Boolean concurrency = true;
-
+    
     /**
      * 报警 url
      */
     private String webHook;
-
+    
     /**
      * 报警策略
      */
     private String alertName;
-
+    
 }

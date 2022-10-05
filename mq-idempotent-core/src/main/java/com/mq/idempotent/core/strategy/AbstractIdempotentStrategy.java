@@ -31,42 +31,42 @@ import lombok.AllArgsConstructor;
  */
 @AllArgsConstructor
 public abstract class AbstractIdempotentStrategy implements IdempotentStrategy {
-
-	private final IdempotentConfig idempotentConfig;
-
-	private final MessageConverter messageConverter;
-
-	public Long getTryLockTime() {
-		return idempotentConfig.getTryLockTime();
-	}
-
-	public TimeUnit getTryLockTimeUnit() {
-		return idempotentConfig.getTryLockTimeUnit();
-	}
-
-	public String getUniqueKey(Object o, String field, Method method, Object[] args) {
-		String uniqueKeyPrefix = idempotentConfig.getUniqueKeyPrefix();
-		return uniqueKeyPrefix + messageConverter.getUniqueKey(o, field, method, args);
-	}
-
-	public IdempotentConfig getIdempotentConfig() {
-		return idempotentConfig;
-	}
-
-	public String getUniqueValue() {
-		return idempotentConfig.getUniqueValue();
-	}
-
-	public Long getKeyTimeOut() {
-		return idempotentConfig.getKeyTimeOut();
-	}
-
-	public TimeUnit getTimeOutTimeUnit() {
-		return idempotentConfig.getTimeOutTimeUnit();
-	}
-
-	public String getWebHook() {
-		return idempotentConfig.getWebHook();
-	}
-
+    
+    private final IdempotentConfig idempotentConfig;
+    
+    private final MessageConverter messageConverter;
+    
+    public Long getTryLockTime() {
+        return idempotentConfig.getTryLockTime();
+    }
+    
+    public TimeUnit getTryLockTimeUnit() {
+        return idempotentConfig.getTryLockTimeUnit();
+    }
+    
+    public String getUniqueKey(Object o, String field, Method method, Object[] args) {
+        String uniqueKeyPrefix = idempotentConfig.getUniqueKeyPrefix();
+        return uniqueKeyPrefix + messageConverter.getUniqueKey(o, field, method, args);
+    }
+    
+    public IdempotentConfig getIdempotentConfig() {
+        return idempotentConfig;
+    }
+    
+    public String getUniqueValue() {
+        return idempotentConfig.getUniqueValue();
+    }
+    
+    public Long getKeyTimeOut() {
+        return idempotentConfig.getKeyTimeOut();
+    }
+    
+    public TimeUnit getTimeOutTimeUnit() {
+        return idempotentConfig.getTimeOutTimeUnit();
+    }
+    
+    public String getWebHook() {
+        return idempotentConfig.getWebHook();
+    }
+    
 }

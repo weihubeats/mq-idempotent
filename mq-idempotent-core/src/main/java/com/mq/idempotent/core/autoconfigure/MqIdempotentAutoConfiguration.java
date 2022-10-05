@@ -49,18 +49,16 @@ import org.springframework.transaction.PlatformTransactionManager;
 @EnableConfigurationProperties({IdempotentProperties.class})
 @AllArgsConstructor
 public class MqIdempotentAutoConfiguration {
-
+    
     private IdempotentProperties properties;
-
-
+    
     @Bean
     public MqIdempotentAnnotationAdvisor mqIdempotentAnnotationAdvisor(AbstractIdempotentStrategy idempotentStrategy, @Autowired(required = false) AlertStrategy alertStrategy,
-            TransactionUtil transactionUtil) {
+                                                                       TransactionUtil transactionUtil) {
         MqIdempotentAnnotationInterceptor advisor = new MqIdempotentAnnotationInterceptor(idempotentStrategy, alertStrategy, transactionUtil);
         return new MqIdempotentAnnotationAdvisor(advisor, Idempotent.class);
     }
-
-
+    
     @ConditionalOnMissingBean(IdempotentConfig.class)
     @Bean
     public IdempotentConfig idempotentConfig() {
@@ -68,20 +66,20 @@ public class MqIdempotentAutoConfiguration {
         idempotentConfig.initConfig(properties);
         return idempotentConfig;
     }
-
+    
     @Bean
-    @ConditionalOnProperty(prefix = IdempotentProperties.PREFIX + "." , value = "alertName", havingValue = "lark")
+    @ConditionalOnProperty(prefix = IdempotentProperties.PREFIX + ".", value = "alertName", havingValue = "lark")
     public AlertStrategy alertStrategy(IdempotentConfig idempotentConfig) {
         return AlertStrategyFactory.newInstance(idempotentConfig.getAlertName());
     }
-
+    
     @Bean
     @ConditionalOnClass(RedissonClient.class)
     @ConditionalOnProperty(prefix = IdempotentProperties.PREFIX + ".strategy", value = "jdbc", havingValue = "true")
     public AbstractIdempotentStrategy jdbcIdempotentStrategy(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter) {
         return new RedisIdempotentStrategy(idempotentConfig, messageConverter, redissonClient);
     }
-
+    
     @Bean
     @ConditionalOnClass(AbstractIdempotentStrategy.class)
     public AbstractIdempotentStrategy redisIdempotentStrategy(RedissonClient redissonClient, IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter) {
@@ -92,6 +90,5 @@ public class MqIdempotentAutoConfiguration {
     public TransactionUtil transactionUtil(PlatformTransactionManager transactionManager) {
         return new TransactionUtil(transactionManager);
     }
-
-
+    
 }

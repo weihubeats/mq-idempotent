@@ -23,9 +23,7 @@ package com.mq.idempotent.core.constants;
  * @description: redis常量
  */
 public interface RedisConstants {
-
-
+    
     String KEY = "mq:unique:";
-
-
+    
 }

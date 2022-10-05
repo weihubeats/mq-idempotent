@@ -23,7 +23,7 @@ package com.mq.idempotent.core.exception;
  * @description:
  */
 public class MessageConcurrencyException extends RuntimeException {
-
+    
     public MessageConcurrencyException(String message) {
         super(message);
     }
