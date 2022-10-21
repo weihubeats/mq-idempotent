@@ -1,3 +1,20 @@
+/*
+ * Licensed to the Apache Software Foundation (ASF) under one or more
+ * contributor license agreements.  See the NOTICE file distributed with
+ * this work for additional information regarding copyright ownership.
+ * The ASF licenses this file to You under the Apache License, Version 2.0
+ * (the "License"); you may not use this file except in compliance with
+ * the License.  You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+
 package com.samples.config;
 
 import com.samples.consumer.MessageEventHandler;
@@ -14,9 +31,6 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.util.CollectionUtils;
 
-
-
-
 /**
  * @author : wh
  * @date : 2021/11/15 15:44
@@ -24,40 +38,37 @@ import org.springframework.util.CollectionUtils;
  */
 @Configuration
 public class MQConfig {
-
+    
     @Value("${rocketmq.consumer.namesrvAddr:127.0.0.1:9876}")
     private String namesrvAddr;
-
+    
     @Value("${rocketmq.consumer.groupName:please_rename_unique_group_name_4}")
     private String groupName;
-
+    
     @Value("${rocketmq.consumer.consumeThreadMin:10}")
     private int consumeThreadMin;
-
+    
     @Value("${rocketmq.consumer.consumeThreadMax:10}")
     private int consumeThreadMax;
-
+    
     @Value("${rocketmq.consumer.topics:TopicTest}")
     private String topics;
-
+    
     @Value("${rocketmq.consumer.consumeMessageBatchMaxSize:1}")
     private int consumeMessageBatchMaxSize;
-
+    
     @Autowired
     MessageEventHandler handler;
-
-
-
-
+    
     @Bean
     @ConditionalOnMissingBean
     public DefaultMQPushConsumer defaultMQPushConsumer() throws RuntimeException {
-
+        
         DefaultMQPushConsumer consumer = new DefaultMQPushConsumer(groupName);
         consumer.setNamesrvAddr(namesrvAddr);
         consumer.setConsumeThreadMin(consumeThreadMin);
         consumer.setConsumeThreadMax(consumeThreadMax);
-
+        
         // 设置 consumer 第一次启动是从队列头部开始消费还是队列尾部开始消费
         // 如果非第一次启动，那么按照上次消费的位置继续消费
         consumer.setConsumeFromWhere(ConsumeFromWhere.CONSUME_FROM_FIRST_OFFSET);
@@ -73,7 +84,7 @@ public class MQConfig {
             handler.consumer(messageExt);
             return ConsumeConcurrentlyStatus.CONSUME_SUCCESS;
         });
-
+        
         try {
             consumer.subscribe(topics, "*");
             // 启动消费
@@ -83,8 +94,5 @@ public class MQConfig {
         }
         return consumer;
     }
-
-
-
-
+    
 }

@@ -30,6 +30,7 @@ import java.io.Serializable;
  */
 @FunctionalInterface
 public interface Func0<R> extends Serializable {
+    
     /**
      * 执行函数
      *
@@ -37,7 +38,7 @@ public interface Func0<R> extends Serializable {
      * @throws Exception 自定义异常
      */
     R call() throws Exception;
-
+    
     /**
      * 执行函数，异常包装为RuntimeException
      *

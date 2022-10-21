@@ -28,19 +28,19 @@ import java.lang.annotation.*;
 @Retention(RetentionPolicy.RUNTIME)
 @Documented
 public @interface Idempotent {
-
+    
     /**
      * idempotent property
      * @return
      */
     String field() default "msgId";
-
+    
     /**
      * 是否开启并发锁控制
      * @return
      */
     boolean lock() default true;
-
+    
     /**
      * 是否开启事务
      * @return

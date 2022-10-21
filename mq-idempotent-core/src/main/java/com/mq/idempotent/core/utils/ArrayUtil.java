@@ -27,12 +27,12 @@ import java.lang.reflect.Array;
  * @description:
  */
 public class ArrayUtil {
-
+    
     /**
      * 数组中元素未找到的下标，值为-1
      */
     public static final int INDEX_NOT_FOUND = -1;
-
+    
     public static <T> Object insert(Object array, int index, T... newElements) {
         if (isEmpty(newElements)) {
             return array;
@@ -40,12 +40,12 @@ public class ArrayUtil {
         if (isEmpty(array)) {
             return newElements;
         }
-
+        
         final int len = length(array);
         if (index < 0) {
             index = (index % len) + len;
         }
-
+        
         final T[] result = newArray(array.getClass().getComponentType(), Math.max(len, index) + newElements.length);
         System.arraycopy(array, 0, result, 0, Math.min(len, index));
         System.arraycopy(newElements, 0, result, index, newElements.length);
@@ -54,26 +54,26 @@ public class ArrayUtil {
         }
         return result;
     }
-
+    
     public static <T> boolean isEmpty(T[] array) {
         return array == null || array.length == 0;
     }
-
+    
     public static boolean isArray(Object obj) {
         return null != obj && obj.getClass().isArray();
     }
-
+    
     public static <T> T[] newArray(Class<?> componentType, int newSize) {
         return (T[]) Array.newInstance(componentType, newSize);
     }
-
+    
     public static int length(Object array) throws IllegalArgumentException {
         if (null == array) {
             return 0;
         }
         return Array.getLength(array);
     }
-
+    
     public static boolean isEmpty(Object array) {
         if (array != null) {
             if (isArray(array)) {
@@ -83,7 +83,7 @@ public class ArrayUtil {
         }
         return true;
     }
-
+    
     /**
      * 返回数组中第一个匹配规则的值
      *
@@ -98,10 +98,10 @@ public class ArrayUtil {
         if (index < 0) {
             return null;
         }
-
+        
         return array[index];
     }
-
+    
     /**
      * 返回数组中第一个匹配规则的值的位置
      *
@@ -114,7 +114,7 @@ public class ArrayUtil {
     public static <T> int matchIndex(Matcher<T> matcher, T... array) {
         return matchIndex(matcher, 0, array);
     }
-
+    
     /**
      * 返回数组中第一个匹配规则的值的位置
      *
@@ -134,10 +134,10 @@ public class ArrayUtil {
                 }
             }
         }
-
+        
         return INDEX_NOT_FOUND;
     }
-
+    
     /**
      * 数组是否为非空
      *
@@ -148,7 +148,7 @@ public class ArrayUtil {
     public static <T> boolean isNotEmpty(T[] array) {
         return (null != array && array.length != 0);
     }
-
+    
     /**
      * 将新元素添加到已有数组中<br>
      * 添加新元素会生成一个新的数组，不影响原数组
@@ -165,7 +165,7 @@ public class ArrayUtil {
         }
         return insert(buffer, buffer.length, newElements);
     }
-
+    
     /**
      * 将新元素插入到到已有数组中的某个位置<br>
      * 添加新元素会生成一个新的数组，不影响原数组<br>
@@ -181,5 +181,5 @@ public class ArrayUtil {
     public static <T> T[] insert(T[] buffer, int index, T... newElements) {
         return (T[]) insert((Object) buffer, index, newElements);
     }
-
+    
 }

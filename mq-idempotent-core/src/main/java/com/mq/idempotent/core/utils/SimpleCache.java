@@ -35,8 +35,9 @@ import java.util.function.Predicate;
  * @author Looly
  */
 public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializable {
+    
     private static final long serialVersionUID = 1L;
-
+    
     /**
      * 池
      */
@@ -47,14 +48,14 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
      * 写的时候每个key一把锁，降低锁的粒度
      */
     protected final Map<K, Lock> keyLockMap = new ConcurrentHashMap<>();
-
+    
     /**
      * 构造，默认使用{@link WeakHashMap}实现缓存自动清理
      */
     public SimpleCache() {
         this(new WeakHashMap<>());
     }
-
+    
     /**
      * 构造
      * <p>
@@ -68,7 +69,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
     public SimpleCache(Map<K, V> initMap) {
         this.cache = initMap;
     }
-
+    
     /**
      * 从缓存池中查找值
      *
@@ -83,7 +84,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
             lock.readLock().unlock();
         }
     }
-
+    
     /**
      * 从缓存中获得对象，当对象不在缓存中或已经过期返回Func0回调产生的对象
      *
@@ -94,7 +95,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
     public V get(K key, Func0<V> supplier) {
         return get(key, null, supplier);
     }
-
+    
     /**
      * 从缓存中获得对象，当对象不在缓存中或已经过期返回Func0回调产生的对象
      *
@@ -106,7 +107,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
     public V get(K key, Predicate<V> validPredicate, Func0<V> supplier) {
         V v = get(key);
         if (null == v && null != supplier) {
-            //每个key单独获取一把锁，降低锁的粒度提高并发能力，see pr#1385@Github
+            // 每个key单独获取一把锁，降低锁的粒度提高并发能力，see pr#1385@Github
             final Lock keyLock = keyLockMap.computeIfAbsent(key, k -> new ReentrantLock());
             keyLock.lock();
             try {
@@ -125,10 +126,10 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
                 keyLockMap.remove(key);
             }
         }
-
+        
         return v;
     }
-
+    
     /**
      * 放入缓存
      *
@@ -146,7 +147,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
         }
         return value;
     }
-
+    
     /**
      * 移除缓存
      *
@@ -162,7 +163,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
             lock.writeLock().unlock();
         }
     }
-
+    
     /**
      * 清空缓存池
      */
@@ -175,7 +176,7 @@ public class SimpleCache<K, V> implements Iterable<Map.Entry<K, V>>, Serializabl
             lock.writeLock().unlock();
         }
     }
-
+    
     @Override
     public Iterator<Map.Entry<K, V>> iterator() {
         return this.cache.entrySet().iterator();

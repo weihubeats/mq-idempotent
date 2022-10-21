@@ -29,19 +29,19 @@ import lombok.Data;
  */
 @Data
 public class IdempotentConfig {
-
+    
     /**
      * 去重key 前缀
      */
     private String uniqueKeyPrefix;
-
+    
     /**
      * 去重值
      */
     private String uniqueValue;
-
+    
     private String recordKeySuffix;
-
+    
     /**
      * 并发获取锁等待时间 TimeUnit.SECONDS
      */
@@ -50,26 +50,24 @@ public class IdempotentConfig {
      * 并发获取锁等待时间单位
      */
     private TimeUnit tryLockTimeUnit = TimeUnit.SECONDS;
-
+    
     /**
      * 存放已消费消息时间，过期则删除。
      */
     private Long keyTimeOut;
-
+    
     /**
      * 消费key存放redis时间单位
      */
     private TimeUnit timeOutTimeUnit = TimeUnit.DAYS;
-
+    
     /**
      * 报警策略
      */
     private String alertName;
     
-    
     private String webHook;
-
-
+    
     public void initConfig(IdempotentProperties properties) {
         this.uniqueKeyPrefix = properties.getUniqueKeyPrefix();
         this.uniqueValue = properties.getUniqueValue();
@@ -78,6 +76,5 @@ public class IdempotentConfig {
         this.recordKeySuffix = properties.getRecordKeySuffix();
         this.webHook = properties.getWebHook();
     }
-
-
+    
 }

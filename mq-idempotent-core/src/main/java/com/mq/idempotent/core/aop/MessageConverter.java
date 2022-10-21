@@ -25,7 +25,7 @@ import java.lang.reflect.Method;
  * @description: 消息转换器
  */
 public interface MessageConverter<T> {
-
+    
     /**
      * 
      * @param t 消息
@@ -35,5 +35,5 @@ public interface MessageConverter<T> {
      * @return
      */
     String getUniqueKey(T t, String field, Method method, Object[] args);
-
+    
 }

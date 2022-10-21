@@ -24,6 +24,7 @@ package com.mq.idempotent.core.utils;
  */
 @FunctionalInterface
 public interface Matcher<T> {
+    
     /**
      * 给定对象是否匹配
      *

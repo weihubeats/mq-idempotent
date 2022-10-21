@@ -28,30 +28,29 @@ import org.springframework.jdbc.core.JdbcTemplate;
  * @description:
  */
 public class JDBCIdempotentStrategy extends AbstractIdempotentStrategy {
-
+    
     private final JdbcTemplate jdbcTemplate;
-
+    
     public JDBCIdempotentStrategy(IdempotentConfig idempotentConfig, MessageConverter<?> messageConverter, JdbcTemplate jdbcTemplate) {
         super(idempotentConfig, messageConverter);
         this.jdbcTemplate = jdbcTemplate;
     }
-
-
+    
     @Override
     public boolean lock(String lockName) {
         return false;
     }
-
+    
     @Override
     public void save(String uniqueKey) {
-
+        
     }
-
+    
     @Override
     public void unlock(String lockName) {
-
+        
     }
-
+    
     @Override
     public boolean exitKey(String key) {
         return false;
