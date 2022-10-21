@@ -24,6 +24,7 @@
 	<properties>
 		<revision>1.1.6</revision>
 		<flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
+		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
 	</properties>
 	
 	<dependencyManagement>
@@ -57,7 +58,7 @@
 	</developers>
 
 	<scm>
-		<connection>scm:git@github.com:weihubeats/wh-mq-Idempotent.git</connection>
+		<connection>scm:git@github.com:weihubeats/mq-idempotent.git</connection>
 		<developerConnection>scm:git@github.com:weihubeats/mq-idempotent.git</developerConnection>
 		<url>git@github.com:weihubeats/mq-idempotent.git</url>
 	</scm>
@@ -132,7 +133,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-gpg-plugin</artifactId>
-				<version>1.6</version>
+				<version>${maven-gpg-plugin.version}</version>
 				<executions>
 					<execution>
 						<id>sign-artifacts</id>

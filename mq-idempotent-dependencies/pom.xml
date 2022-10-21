@@ -10,6 +10,10 @@
 	<groupId>io.github.weihubeats</groupId>
 	<artifactId>mq-idempotent-dependencies</artifactId>
 
+	<name>mq-idempotent</name>
+	<description>mq-Idempotent</description>
+	<url>https://github.com/weihubeats/mq-idempotent</url>
+
 	<properties>
 		<maven.compiler.source>8</maven.compiler.source>
 		<maven.compiler.target>8</maven.compiler.target>
@@ -29,7 +33,9 @@
 		<rocketmq-client.version>4.7.0</rocketmq-client.version>
 		<revision>1.1.6</revision>
 		<flatten-maven-plugin.version>1.2.7</flatten-maven-plugin.version>
+		<maven-gpg-plugin.version>3.0.1</maven-gpg-plugin.version>
 	</properties>
+	
 
 	<dependencyManagement>
 		<dependencies>
@@ -132,6 +138,28 @@
 		</dependencies>
 	</dependencyManagement>
 
+	<scm>
+		<connection>scm:git@github.com:weihubeats/mq-idempotent.git</connection>
+		<developerConnection>scm:git@github.com:weihubeats/mq-idempotent.git</developerConnection>
+		<url>git@github.com:weihubeats/mq-idempotent.git</url>
+	</scm>
+
+	<developers>
+		<developer>
+			<name>weihubeats</name>
+			<email>weihubeats@163.com</email>
+			<organization>https://weihubeats.blog.csdn.net/</organization>
+		</developer>
+	</developers>
+
+	<licenses>
+		<license>
+			<name>The Apache Software License, Version 2.0</name>
+			<url>http://www.apache.org/licenses/LICENSE-2.0.txt</url>
+			<distribution>repo</distribution>
+		</license>
+	</licenses>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -159,20 +187,35 @@
 					</execution>
 				</executions>
 			</plugin>
+
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-gpg-plugin</artifactId>
+				<version>${maven-gpg-plugin.version}</version>
+				<executions>
+					<execution>
+						<id>sign-artifacts</id>
+						<phase>verify</phase>
+						<goals>
+							<goal>sign</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			
 		</plugins>
 	</build>
 
+
 	<distributionManagement>
 		<snapshotRepository>
-			<id>nexus-snapshots</id>
-			<url>https://oss.sonatype.org/content/repositories/snapshots/</url>
+			<id>sonatype</id>
+			<url>https://s01.oss.sonatype.org/content/repositories/snapshots/</url>
 		</snapshotRepository>
 		<repository>
-			<id>nexus-releases</id>
-			<url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+			<id>sonatype</id>
+			<url>https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/</url>
 		</repository>
 	</distributionManagement>
-
-
 
 </project>
