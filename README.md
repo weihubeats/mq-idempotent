@@ -32,27 +32,27 @@ General mq message idempotent deduplication framework, out of the box, supports 
 ```xml
 <dependency>
   <groupId>io.github.weihubeats</groupId>
-  <artifactId>wh-mq-rocketmq</artifactId>
-  <version>1.1.4-Release</version>
+  <artifactId>mq-idempotent-spring-boot-starter</artifactId>
+  <version>1.1.6</version>
 </dependency>
 ```
 - gradle
 ```xml
-implementation 'io.github.weihubeats:wh-mq-rocketmq:1.1.4-Release'
+implementation 'io.github.weihubeats:mq-idempotent-spring-boot-starter:1.1.6'
 ```
 
 ##### aliyun ons-client
 ```xml
 <dependency>
 <groupId>io.github.weihubeats</groupId>
-<artifactId>wh-mq-aliyun-rocketmq</artifactId>
-<version>1.1.4-Release</version>
+<artifactId>mq-idempotent-spring-boot-starter-aliyun-rocketmq</artifactId>
+<version>1.1.6</version>
 </dependency>
 ```
 
 - gradle
 ```xml
-implementation 'io.github.weihubeats:wh-mq-aliyun-rocketmq'
+implementation 'io.github.weihubeats:mq-idempotent-spring-boot-starter-aliyun-rocketmq:1.1.6'
 ```
 #### 2. 在需要幂等的方法上添加注解
 ```java
@@ -110,8 +110,8 @@ idempotent:
 ```java
 <dependency>
 <groupId>io.github.weihubeats</groupId>
-<artifactId>wh-core</artifactId>
-<version>1.1.4-Release</version>
+<artifactId>mq-idempotent-core</artifactId>
+<version>1.1.6</version>
 </dependency>
 ```
 
