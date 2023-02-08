@@ -55,36 +55,43 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
     
     @Override
     public Object invoke(MethodInvocation methodInvocation) throws Throwable {
-        
         Method method = methodInvocation.getMethod();
-        
-        String returnTypeName = method.getReturnType().getName();
-        // 方法返回值仅支持 boolean void 返回值
-        boolean isVoid = returnTypeName.equalsIgnoreCase("void");
-        if (!isVoid && !returnTypeName.equalsIgnoreCase("boolean")) {
+
+        // 判断返回值是不是void或者boolean
+        final boolean isReturnVoid = method.getReturnType().equals(Void.TYPE);
+        final boolean isReturnBoolean = method.getReturnType().equals(Boolean.TYPE);
+        if (!isReturnVoid && !isReturnBoolean) {
             throw new Exception("method returnType is not boolean or void");
         }
-        // 方法参数
+        //方法参数
         Object[] args = methodInvocation.getArguments();
         Idempotent annotation = method.getAnnotation(Idempotent.class);
         String key = idempotentStrategy.getUniqueKey(Arrays.stream(args).findFirst()
                 .orElseThrow(() -> new Exception("去重第一个参数不能为空")), annotation.field(), method, args);
-        if (log.isDebugEnabled()) {
-            log.info("唯一key {}", key);
-        }
-        if (idempotentStrategy.exitKey(key)) {
-            log.warn("重复消费 {}", key);
-            return isVoid ? null : true;
-        }
         if (!idempotentStrategy.lock(key)) {
             log.info("有消息正在消费");
             // 抛出异常依赖mq自动重试
             throw new MessageConcurrencyException("有消息正在消费");
         }
-        if (annotation.transactional()) {
-            return transactionUtil.transact(() -> proceed(methodInvocation, key));
+        if (log.isDebugEnabled()) {
+            log.info("唯一key {}", key);
         }
-        return proceed(methodInvocation, key);
+        if (idempotentStrategy.exitKey(key)) {
+            log.warn("重复消费 {}", key);
+            return isReturnVoid ? null : true;
+        }
+
+        Object res;
+        try {
+            if (annotation.transactional()) {
+                res = transactionUtil.transact(() -> proceed(methodInvocation, key));
+            } else {
+                res = proceed(methodInvocation, key);
+            }
+        } finally {
+            idempotentStrategy.unlock(key);
+        }
+        return res;
     }
     
     public Object proceed(MethodInvocation methodInvocation, String key) {
@@ -99,8 +106,6 @@ public class MqIdempotentAnnotationInterceptor implements MethodInterceptor {
             }
             log.error("throwable ", throwable);
             throw new RuntimeException(throwable);
-        } finally {
-            idempotentStrategy.unlock(key);
         }
     }
     
